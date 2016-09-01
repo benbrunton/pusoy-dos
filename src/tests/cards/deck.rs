@@ -1,5 +1,5 @@
 
-use cards::types::*;
+use cards::deck::*;
 
 #[test]
 pub fn it_gets_a_full_deck(){

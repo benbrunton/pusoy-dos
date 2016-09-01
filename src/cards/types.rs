@@ -1,12 +1,15 @@
 use std::fmt;
-use rand;
-use rand::Rng;
 
 #[derive(Clone, Debug, PartialEq, Copy)]
+/// Card suit
 pub enum Suit{
+    /// ♦
     Diamonds,
+    /// ♣
     Clubs,
+    /// ♥
     Hearts,
+    /// ♠
     Spades
 }
 
@@ -23,14 +26,43 @@ impl fmt::Display for Suit{
 }
 
 #[derive(Clone, Debug, PartialEq, Copy)]
+/// Card colour
 pub enum Colour{
+    /// red
     Red,
+    /// black
     Black
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Copy)]
+/// Rank of a card
 pub enum Rank{
-    Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King
+    /// 3
+    Three, 
+    /// 4
+    Four, 
+    /// 5
+    Five, 
+    /// 6
+    Six, 
+    /// 7
+    Seven, 
+    /// 8
+    Eight, 
+    /// 9
+    Nine, 
+    /// 10
+    Ten, 
+    /// Jack
+    Jack, 
+    /// Queen
+    Queen, 
+    /// King
+    King,
+    /// Ace
+    Ace, 
+    /// 2 
+    Two
 }
 
 impl fmt::Display for Rank{
@@ -55,172 +87,4 @@ impl fmt::Display for Rank{
 }
 
 
-#[derive(Clone, Debug, PartialEq, Copy)]
-pub struct Card{
-    pub rank: Rank,
-    pub suit: Suit,
-    pub colour: Colour
-}
-
-impl Card {
-
-    pub fn new(rank: Rank, suit: Suit) -> Card {
-        let colour = match suit {
-            Suit::Diamonds | Suit::Hearts   => Colour::Red,
-            _                               => Colour::Black
-        };
-        Card{suit: suit, rank: rank, colour: colour}
-    }
-    
-    pub fn previous_rank(&self) -> Option<Rank>{
-        previous_rank(&self.rank)
-    }
-    
-    pub fn next_rank(&self) -> Option<Rank>{
-        next_rank(&self.rank)
-    }
-    
-    pub fn alternate_colour(&self) -> Colour{
-        if self.colour == Colour::Red {
-            Colour::Black
-        } else {
-            Colour::Red
-        }
-    }
-}
-
-impl fmt::Display for Card {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let card = format!("{}{}", self.suit, self.rank);
-        write!(f, "{}", card)
-    }
-}
-
-
-pub struct Deck(Vec<Card>);
-
-impl Deck {
-    pub fn new() -> Deck {
-        let mut cards:Vec<Card> = Vec::with_capacity(52);
-        for suit in &[Suit::Spades, Suit::Hearts, Suit::Diamonds, Suit::Clubs] {
-            for rank in &[Rank::Ace, Rank::Two, Rank::Three, Rank::Four, 
-                Rank::Five, Rank::Six, Rank::Seven, Rank::Eight, Rank::Nine, 
-                Rank::Ten, Rank::Jack, Rank::Queen, Rank::King] {
-                cards.push( Card::new(rank.clone(), suit.clone()) );
-            }
-        }
-        Deck(cards)
-    }
-    
-    pub fn deal(&mut self) -> Option<Card> {
-        self.0.pop()
-    }
- 
-    pub fn shuffle(&mut self) {
-        let mut rng = rand::thread_rng();
-        rng.shuffle(&mut self.0)
-    }
-    
-    pub fn take(&mut self, n: usize) -> Vec<Card>{
-    
-        let mut temp_stack:Vec<Card> = Vec::new();
-        while temp_stack.len() < n {
-            if let Some(card) = self.deal(){
-                temp_stack.push(card);
-            }
-        }
-        
-        temp_stack
-    }
-    
-    pub fn count(&self) -> usize {
-        self.0.len()
-    }
-    
-    pub fn add_to_top(&mut self, cards: Vec<Card>){
-        for card in cards {
-            self.0.push(card.clone());
-        }
-    }
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct Stack(Vec<Card>);
-
-impl Stack {
-
-    pub fn new() -> Stack{
-        Stack(Vec::new())
-    }
-
-    pub fn count(&self) -> usize {
-        self.0.len()
-    }
-    
-    pub fn add_to_top(&mut self, cards: Vec<Card>){
-        for card in cards.iter() {
-            self.0.push(card.clone());
-        }
-    }
-    
-    pub fn show(&self, n: usize) -> Option<Card>{
-        if self.0.len() <= n {
-            None
-        }else{
-            Some(self.0[n].clone())
-        }
-    }
-    
-    pub fn take(&mut self, n: usize) -> Vec<Card>{
-    
-        let mut temp_stack:Vec<Card> = Vec::new();
-        while temp_stack.len() < n {
-            if let Some(card) = self.deal(){
-                temp_stack.push(card);
-            }
-        }
-        
-        temp_stack
-    }
-    
-    pub fn deal(&mut self) -> Option<Card> {
-        self.0.pop()
-    }
-}
-
-fn previous_rank(rank:&Rank) -> Option<Rank> {
-    match *rank {
-        Rank::Ace      => None,
-        Rank::Two      => Some(Rank::Ace),
-        Rank::Three    => Some(Rank::Two),
-        Rank::Four     => Some(Rank::Three),
-        Rank::Five     => Some(Rank::Four),
-        Rank::Six      => Some(Rank::Five),
-        Rank::Seven    => Some(Rank::Six),
-        Rank::Eight    => Some(Rank::Seven),
-        Rank::Nine     => Some(Rank::Eight),
-        Rank::Ten      => Some(Rank::Nine),
-        Rank::Jack     => Some(Rank::Ten),
-        Rank::Queen    => Some(Rank::Jack),
-        Rank::King     => Some(Rank::Queen)
-    }
-}
-
-fn next_rank(rank:&Rank) -> Option<Rank> {
-    match *rank {
-        Rank::Ace      => Some(Rank::Two),
-        Rank::Two      => Some(Rank::Three),
-        Rank::Three    => Some(Rank::Four),
-        Rank::Four     => Some(Rank::Five),
-        Rank::Five     => Some(Rank::Six),
-        Rank::Six      => Some(Rank::Seven),
-        Rank::Seven    => Some(Rank::Eight),
-        Rank::Eight    => Some(Rank::Nine),
-        Rank::Nine     => Some(Rank::Ten),
-        Rank::Ten      => Some(Rank::Jack),
-        Rank::Jack     => Some(Rank::Queen),
-        Rank::Queen    => Some(Rank::King),
-        Rank::King     => None
-    }
-}
 
