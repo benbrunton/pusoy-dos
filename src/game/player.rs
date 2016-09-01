@@ -28,4 +28,5 @@ impl Player{
     pub fn receive(&mut self, card: Card){
        self.hand.push(card); 
     }
+
 }
