@@ -1,4 +1,5 @@
 use cards::card::Card;
+use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq, Copy)]
 /// Type of hand that can be played
@@ -56,5 +57,39 @@ fn check_valid_prial(cards: Vec<Card>) -> Option<Move> {
 }
 
 fn check_valid_fct(cards: Vec<Card>) -> Option<Move> {
+
+    let mut hm = HashMap::new();
+    for card in &cards {
+        hm.insert(card.rank, 0);
+    }
+    
+    let count_types = cards.iter().fold(hm, |acc, &card|{
+        let mut output = HashMap::new();
+        for (rank, count) in &acc {
+            let c = if *rank == card.rank {
+                *count + 1
+            } else {
+                *count
+            };
+            output.insert(*rank, c);
+        }
+        output
+    });
+
+   for (_, count) in &count_types {
+       match *count{
+          4 => {
+              return Some(Move::FiveCardTrick(
+                      cards[0], 
+                      cards[1], 
+                      cards[2], 
+                      cards[3], 
+                      cards[4]))
+          },
+          _ => ()
+       }
+   }
+
+
     None
 }

@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Clone, Debug, PartialEq, Copy)]
+#[derive(Clone, Debug, PartialEq, Eq, Copy, Hash)]
 /// Card suit
 pub enum Suit{
     /// ♦
@@ -25,7 +25,7 @@ impl fmt::Display for Suit{
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Copy)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Copy)]
 /// Card colour
 pub enum Colour{
     /// red
@@ -34,7 +34,7 @@ pub enum Colour{
     Black
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Copy)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Hash)]
 /// Rank of a card
 pub enum Rank{
     /// 3
