@@ -58,6 +58,13 @@ fn check_valid_prial(cards: Vec<Card>) -> Option<Move> {
 
 fn check_valid_fct(cards: Vec<Card>) -> Option<Move> {
 
+    if cards[0].rank == cards[1].rank
+        && cards[1].rank == cards[2].rank
+        && cards[2].rank == cards[3].rank
+        && cards[3].rank == cards[4].rank {
+        return build_five_card_trick(cards);
+    }
+
     let mut hm = HashMap::new();
     for card in &cards {
         hm.insert(card.rank, 0);
@@ -79,17 +86,39 @@ fn check_valid_fct(cards: Vec<Card>) -> Option<Move> {
    for (_, count) in &count_types {
        match *count{
           4 => {
-              return Some(Move::FiveCardTrick(
-                      cards[0], 
-                      cards[1], 
-                      cards[2], 
-                      cards[3], 
-                      cards[4]))
+              return build_five_card_trick(cards);
           },
           _ => ()
        }
    }
 
+   if cards[0].suit == cards[1].suit
+        && cards[1].suit == cards[2].suit
+        && cards[2].suit == cards[3].suit
+        && cards[3].suit == cards[4].suit {
+            return build_five_card_trick(cards);
+    }
+
+    if cards[0].next_rank().unwrap() == cards[1].rank
+        && cards[1].next_rank().unwrap() == cards[2].rank
+        && cards[2].next_rank().unwrap() == cards[3].rank
+        && cards[3].next_rank().unwrap() == cards[4].rank {
+            return build_five_card_trick(cards);
+    }
 
     None
 }
+
+
+fn build_five_card_trick(cards: Vec<Card>) -> Option<Move> {
+    match cards.len() {
+        5 => Some(Move::FiveCardTrick(
+                            cards[0],
+                            cards[1],
+                            cards[2],
+                            cards[3],
+                            cards[4])),
+        _ => None
+    }
+}
+
