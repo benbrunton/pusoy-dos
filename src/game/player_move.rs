@@ -52,27 +52,24 @@ fn check_valid_fct(cards: Vec<Card>) -> Option<Move> {
 
     let rank_count = get_counts(cards.clone());
     match rank_count.len() {
-        1 => return build_five_card_trick(cards), //five of a kind
-        2 => {
-            //full house or four of a kind
-            return build_five_card_trick(cards);
-        },
+        1 | 2 => build_five_card_trick(cards), //five of a kind, full house or four of a kind
         5 => {
             //flush or straight or straight flush
            if cards[0].suit == cards[1].suit
                 && cards[1].suit == cards[2].suit
                 && cards[2].suit == cards[3].suit
                 && cards[3].suit == cards[4].suit {
-                    return build_five_card_trick(cards);
-            }
-            if cards[0].next_rank().unwrap() == cards[1].rank
+                    build_five_card_trick(cards)
+            } else if cards[0].next_rank().unwrap() == cards[1].rank
                 && cards[1].next_rank().unwrap() == cards[2].rank
                 && cards[2].next_rank().unwrap() == cards[3].rank
                 && cards[3].next_rank().unwrap() == cards[4].rank {
-                    return build_five_card_trick(cards);
+                    build_five_card_trick(cards)
+            }else {
+                None
             }
         },
-        _ => return None
+        _ => None
     }
 }
 
