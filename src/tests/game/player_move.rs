@@ -190,3 +190,27 @@ pub fn a_straight_is_a_five_card_trick(){
     assert_eq!(mv, five_card_trick);
 
 }
+
+#[test]
+pub fn full_house_is_a_five_card_trick(){
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
+    let three_of_hearts  = Card::new(Rank::Three, Suit::Hearts);
+    let three_of_spades  = Card::new(Rank::Three, Suit::Spades);
+    let two_of_spades  = Card::new(Rank::Two, Suit::Spades);
+    let two_of_diamonds = Card::new(Rank::Two, Suit::Diamonds);
+
+    let cards = vec!(three_of_clubs,
+                     three_of_hearts,
+                     three_of_spades,
+                     two_of_spades,
+                     two_of_diamonds);
+
+    let mv = build_move(cards);
+    let five_card_trick = Some(Move::FiveCardTrick(three_of_clubs,
+                     three_of_hearts,
+                     three_of_spades,
+                     two_of_spades,
+                     two_of_diamonds));
+
+    assert_eq!(mv, five_card_trick);
+}
