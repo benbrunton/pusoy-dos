@@ -1,4 +1,5 @@
 use cards::card::Card;
+use cards::types::*;
 use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq, Copy)]
@@ -31,15 +32,8 @@ pub fn build_move(cards: Vec<Card>) -> Option<Move> {
 
 fn check_valid_pair(cards: Vec<Card>) -> Option<Move> {
 
-    if cards.len() != 2 {
-        return None
-    }
-    
-    let card1 = cards[0];
-    let card2 = cards[1];
-    
-    if card1.rank == card2.rank {
-        Some(Move::Pair(card1, card2))
+    if cards.len() == 2 && get_counts(cards.clone()).len() == 1 {
+        Some(Move::Pair(cards[0], cards[1]))
     } else {
         None
     }
@@ -47,9 +41,7 @@ fn check_valid_pair(cards: Vec<Card>) -> Option<Move> {
 
 fn check_valid_prial(cards: Vec<Card>) -> Option<Move> {
 
-    if cards.len() == 3 && 
-        cards[0].rank == cards[1].rank && 
-        cards[1].rank == cards[2].rank{  
+    if cards.len() == 3 && get_counts(cards.clone()).len() == 1 {
         Some(Move::Prial(cards[0], cards[1], cards[2]))
     } else {
         None
@@ -58,55 +50,37 @@ fn check_valid_prial(cards: Vec<Card>) -> Option<Move> {
 
 fn check_valid_fct(cards: Vec<Card>) -> Option<Move> {
 
-    if cards[0].rank == cards[1].rank
-        && cards[1].rank == cards[2].rank
-        && cards[2].rank == cards[3].rank
-        && cards[3].rank == cards[4].rank {
-        return build_five_card_trick(cards);
-    }
-
-    let mut hm = HashMap::new();
-    for card in &cards {
-        hm.insert(card.rank, 0);
-    }
-    
-    let count_types = cards.iter().fold(hm, |acc, &card|{
-        let mut output = HashMap::new();
-        for (rank, count) in &acc {
-            let c = if *rank == card.rank {
-                *count + 1
-            } else {
-                *count
-            };
-            output.insert(*rank, c);
-        }
-        output
-    });
-
-   for (_, count) in &count_types {
-       match *count{
-          4 => {
-              return build_five_card_trick(cards);
-          },
-          _ => ()
-       }
-   }
-
-   if cards[0].suit == cards[1].suit
-        && cards[1].suit == cards[2].suit
-        && cards[2].suit == cards[3].suit
-        && cards[3].suit == cards[4].suit {
+    let rank_count = get_counts(cards.clone());
+    match rank_count.len() {
+        1 => return build_five_card_trick(cards), //five of a kind
+        2 => {
+            //full house or four of a kind
             return build_five_card_trick(cards);
+        },
+        5 => {
+            //flush or straight or straight flush
+           if cards[0].suit == cards[1].suit
+                && cards[1].suit == cards[2].suit
+                && cards[2].suit == cards[3].suit
+                && cards[3].suit == cards[4].suit {
+                    return build_five_card_trick(cards);
+            }
+            if cards[0].next_rank().unwrap() == cards[1].rank
+                && cards[1].next_rank().unwrap() == cards[2].rank
+                && cards[2].next_rank().unwrap() == cards[3].rank
+                && cards[3].next_rank().unwrap() == cards[4].rank {
+                    return build_five_card_trick(cards);
+            }
+        },
+        _ => return None
     }
+}
 
-    if cards[0].next_rank().unwrap() == cards[1].rank
-        && cards[1].next_rank().unwrap() == cards[2].rank
-        && cards[2].next_rank().unwrap() == cards[3].rank
-        && cards[3].next_rank().unwrap() == cards[4].rank {
-            return build_five_card_trick(cards);
-    }
-
-    None
+fn get_counts(cards: Vec<Card>) -> HashMap<Rank, usize> {
+    cards.iter().fold(HashMap::new(), |mut acc, &card| {
+        *acc.entry(card.rank).or_insert(0) += 1;
+        acc
+    })
 }
 
 
