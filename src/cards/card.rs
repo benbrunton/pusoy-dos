@@ -2,7 +2,7 @@ use std::fmt;
 
 use cards::types::*;
 
-#[derive(Clone, Debug, PartialEq, Copy)]
+#[derive(Clone, Debug, PartialEq, Copy, PartialOrd)]
 /// An individual card
 pub struct Card{
     /// The `Rank` of the card

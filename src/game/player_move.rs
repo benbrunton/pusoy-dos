@@ -2,7 +2,7 @@ use cards::card::Card;
 use cards::types::*;
 use std::collections::HashMap;
 
-#[derive(Clone, Debug, PartialEq, Copy)]
+#[derive(Clone, Debug, PartialEq, Copy, PartialOrd)]
 /// Type of hand that can be played
 pub enum Move{
     /// No cards
