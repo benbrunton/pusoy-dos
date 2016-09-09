@@ -57,8 +57,8 @@ pub fn three_of_a_kind_is_a_prial(){
     let cards = vec!(ace_of_spades, ace_of_diamonds, ace_of_hearts);
 
     let mv = build_move(cards);
-    let prial = Some(Move::Prial(ace_of_spades, 
-                                 ace_of_diamonds, 
+    let prial = Some(Move::Prial(ace_of_spades,
+                                 ace_of_diamonds,
                                  ace_of_hearts));
 
     assert_eq!(prial, mv);
@@ -123,7 +123,7 @@ pub fn five_of_a_kind_is_a_five_card_trick(){
     let ace_of_diamonds = Card::new(Rank::Ace, Suit::Diamonds);
     let ace_of_hearts = Card::new(Rank::Ace, Suit::Hearts);
     let ace_of_clubs = Card::new(Rank::Ace, Suit::Clubs);
-    
+
     let cards = vec!(ace_of_spades,
                      ace_of_spades,
                      ace_of_hearts,
