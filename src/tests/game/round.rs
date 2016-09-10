@@ -1,5 +1,5 @@
 use game::round::Round;
-use game::player_move::Move;
+use game::player_move::{ Move, build_move };
 use cards::card::Card;
 use cards::types::*;
 
@@ -211,4 +211,36 @@ pub fn when_every_player_passes_the_last_player_to_move_starts_the_round(){
     assert!(valid_move);
 }
 
+#[test]
+pub fn flush_beats_a_straight(){
+    
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
+    let four_of_spades = Card::new(Rank::Four, Suit::Spades);
+    let five_of_clubs = Card::new(Rank::Five, Suit::Clubs);
+    let six_of_clubs = Card::new(Rank::Six, Suit::Clubs);
+    let seven_of_clubs = Card::new(Rank::Seven, Suit::Clubs);
+    let nine_of_clubs = Card::new(Rank::Nine, Suit::Clubs);
+
+    let straight = build_move(vec!(three_of_clubs, 
+                        four_of_spades, 
+                        five_of_clubs, 
+                        six_of_clubs, 
+                        seven_of_clubs)).unwrap();
+
+    let flush = build_move(vec!(three_of_clubs,
+                        five_of_clubs,
+                        six_of_clubs,
+                        seven_of_clubs,
+                        nine_of_clubs)).unwrap();
+
+    let r = Round::new(vec!(1, 2, 3), 1, straight);
+
+    let valid_move = match r.play(1, flush){
+        Ok(_)   => true,
+        _       => false
+    };
+
+    assert!(valid_move);
+
+}
 

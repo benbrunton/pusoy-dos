@@ -14,7 +14,24 @@ pub enum Move{
     /// 3 of a kind
     Prial(Card, Card, Card),
     /// 5 card trick
-    FiveCardTrick(Card, Card, Card, Card, Card)
+    FiveCardTrick(Trick)
+}
+
+#[derive(Clone, Debug, PartialEq, Copy, PartialOrd)]
+/// Type of 5 card trick
+pub enum Trick{
+    /// sequence
+    Straight(Card, Card, Card, Card, Card),
+    /// same suit
+    Flush(Card, Card, Card, Card, Card),
+    /// 3 over 2
+    FullHouse(Card, Card, Card, Card, Card),
+    /// 4 of same, 1 different
+    FourOfAKind(Card, Card, Card, Card, Card),
+    /// sequence of same suit
+    StraightFlush(Card, Card, Card, Card, Card),
+    /// 5 of same
+    FiveOfAKind(Card, Card, Card, Card, Card)
 }
 
 /// builds a move from a Vec of cards
@@ -52,19 +69,27 @@ fn check_valid_fct(cards: Vec<Card>) -> Option<Move> {
 
     let rank_count = get_counts(cards.clone());
     match rank_count.len() {
-        1 | 2 => build_five_card_trick(cards), //five of a kind, full house or four of a kind
+        1 => build_five_of_a_kind(cards),
+        2 => {
+           match *rank_count.values().last().unwrap() {
+                3 | 2   => build_full_house(cards),
+                4 | 1   => build_four_of_a_kind(cards),
+                _       => None
+
+           }
+        },
         5 => {
             //flush or straight or straight flush
            if cards[0].suit == cards[1].suit
                 && cards[1].suit == cards[2].suit
                 && cards[2].suit == cards[3].suit
                 && cards[3].suit == cards[4].suit {
-                    build_five_card_trick(cards)
+                    build_flush(cards)
             } else if cards[0].next_rank().unwrap() == cards[1].rank
                 && cards[1].next_rank().unwrap() == cards[2].rank
                 && cards[2].next_rank().unwrap() == cards[3].rank
                 && cards[3].next_rank().unwrap() == cards[4].rank {
-                    build_five_card_trick(cards)
+                    build_straight(cards)
             }else {
                 None
             }
@@ -80,15 +105,67 @@ fn get_counts(cards: Vec<Card>) -> HashMap<Rank, usize> {
     })
 }
 
-
-fn build_five_card_trick(cards: Vec<Card>) -> Option<Move> {
+fn build_four_of_a_kind(cards: Vec<Card>) -> Option<Move> {
     match cards.len() {
         5 => Some(Move::FiveCardTrick(
+                    Trick::FourOfAKind(
                             cards[0],
                             cards[1],
                             cards[2],
                             cards[3],
-                            cards[4])),
+                            cards[4]))),
+        _ => None
+    }
+}
+
+fn build_five_of_a_kind(cards: Vec<Card>) -> Option<Move> {
+    match cards.len() {
+        5 => Some(Move::FiveCardTrick(
+                    Trick::FiveOfAKind(
+                            cards[0],
+                            cards[1],
+                            cards[2],
+                            cards[3],
+                            cards[4]))),
+        _ => None
+    }
+}
+
+fn build_full_house(cards: Vec<Card>) -> Option<Move> {
+    match cards.len() {
+        5 => Some(Move::FiveCardTrick(
+                    Trick::FullHouse(
+                            cards[0],
+                            cards[1],
+                            cards[2],
+                            cards[3],
+                            cards[4]))),
+        _ => None
+    }
+}
+
+fn build_flush(cards: Vec<Card>) -> Option<Move> {
+    match cards.len() {
+        5 => Some(Move::FiveCardTrick(
+                    Trick::Flush(
+                            cards[0],
+                            cards[1],
+                            cards[2],
+                            cards[3],
+                            cards[4]))),
+        _ => None
+    }
+}
+
+fn build_straight(cards: Vec<Card>) -> Option<Move> {
+    match cards.len() {
+        5 => Some(Move::FiveCardTrick(
+                    Trick::Straight(
+                            cards[0],
+                            cards[1],
+                            cards[2],
+                            cards[3],
+                            cards[4]))),
         _ => None
     }
 }

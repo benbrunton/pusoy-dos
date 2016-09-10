@@ -103,9 +103,9 @@ impl Round {
                     _               => false
                 }
             },
-            Move::FiveCardTrick(_,_,_,_,_) => {
+            Move::FiveCardTrick(_) => {
                 match new_move {
-                    Move::FiveCardTrick(_,_,_,_,_) => true,
+                    Move::FiveCardTrick(_) => true,
                     _               => false
                 }
             },
