@@ -1,7 +1,6 @@
-use cards::card::Card;
-use cards::types::*;
 use game::player_move::Move;
 
+/// single round
 #[derive(Clone, Debug, PartialEq)]
 pub struct Round{
     players: Vec<i32>,
@@ -11,6 +10,7 @@ pub struct Round{
 
 impl Round {
 
+    /// create new round
     pub fn new(players: Vec<i32>, current_player: i32, last_move: Move) -> Round {
 
         if !players.contains(&current_player){
@@ -56,13 +56,41 @@ impl Round {
             Err(self.clone())
         }
     }
-
+    
+    /// check who should play the next move
     pub fn get_next_player(&self) -> i32 {
         self.current_player
     }
 
     fn valid_move(&self, new_move: Move) -> bool {
+        let matching_type = match self.last_move {
+            Move::Single(_) => {
+                match new_move {
+                    Move::Single(_) => true,
+                    _               => false
+                }
+            },
+            Move::Pair(_, _) => {
+                match new_move {
+                    Move::Pair(_,_) => true,
+                    _               => false
+                }
+            },
+            Move::Prial(_, _, _) => {
+                match new_move {
+                    Move::Prial(_,_,_) => true,
+                    _               => false
+                }
+            },
+            Move::FiveCardTrick(_,_,_,_,_) => {
+                match new_move {
+                    Move::FiveCardTrick(_,_,_,_,_) => true,
+                    _               => false
+                }
+            },
+            _ => false
+        };
 
-        new_move > self.last_move
+        matching_type && new_move > self.last_move
     }
 }

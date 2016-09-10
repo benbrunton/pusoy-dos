@@ -156,3 +156,42 @@ pub fn single_cannot_be_beaten_by_a_higher_single(){
 
     assert!(invalid_move);
 }
+
+#[test]
+pub fn single_cannot_be_beaten_by_non_single_move(){
+
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
+
+    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades);
+    let ace_of_diamonds = Card::new(Rank::Ace, Suit::Diamonds);
+
+    let r = Round::new(vec!(1, 2), 1, Move::Single(three_of_clubs));
+
+    let invalid_move = match r.play(1, Move::Pair(ace_of_spades, ace_of_diamonds)){
+        Err(_)  => true,
+        _       => false
+    };
+
+    assert!(invalid_move);
+}
+
+#[test]
+pub fn when_every_player_passes_the_last_player_to_move_starts_the_round(){
+
+    let r = Round::new(vec!(1, 2, 3), 1, Move::Pass);
+
+    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades);
+    let two_of_hearts = Card::new(Rank::Two, Suit::Hearts);
+
+    let next_round = match r.play(1, Move::Single(ace_of_spades)){
+        Ok(r)  => r,
+        Err(r) => r
+    };
+
+    let next_round = match next_round.play(2, Move::Single(two_of_hearts)){
+        Ok(r) => r,
+        Err(r) => r
+    };
+
+    // player 3 pass - player1 pass - new round
+}
