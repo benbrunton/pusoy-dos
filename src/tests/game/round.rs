@@ -87,3 +87,72 @@ pub fn rotating_the_player_will_bring_it_back_to_beginning_of_vec(){
 pub fn creating_a_round_with_an_invalid_current_player_causes_panic(){
    Round::new(vec!(1, 2, 3), 4, Move::Pass);
 }
+
+#[test]
+pub fn only_the_current_player_can_make_a_move(){
+    let r = Round::new(vec!(1, 2), 2, Move::Pass);
+
+    let invalid_move = match r.play(1, Move::Pass) {
+        Err(_)  => true,
+        _       => false
+    };
+
+    assert!(invalid_move);
+}
+
+#[test]
+pub fn any_hand_can_be_passed_onto_an_emtpy_round(){
+
+    let r = Round::new(vec!(1, 2), 1, Move::Pass);
+
+    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades);
+    let ace_of_diamonds = Card::new(Rank::Ace, Suit::Diamonds);
+
+    let valid_move = match r.play(1, Move::Single(ace_of_spades)) {
+        Ok(_)   => true,
+        _       => false
+    };
+
+    assert!(valid_move);
+
+    let valid_move = match r.play(1, Move::Pair(ace_of_spades, ace_of_diamonds)) {
+       Ok(_)   => true,
+        _       => false
+
+    };
+
+    assert!(valid_move);
+    
+}
+
+#[test]
+pub fn single_can_be_beaten_by_a_higher_single(){
+    
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
+    let four_of_diamonds = Card::new(Rank::Four, Suit::Diamonds);
+
+    let r = Round::new(vec!(1, 2), 1, Move::Single(three_of_clubs));
+
+    let valid_move = match r.play(1, Move::Single(four_of_diamonds)) {
+        Ok(_)   => true,
+        _       => false
+    };
+
+    assert!(valid_move);
+}
+
+#[test]
+pub fn single_cannot_be_beaten_by_a_higher_single(){
+    
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
+    let four_of_diamonds = Card::new(Rank::Four, Suit::Diamonds);
+
+    let r = Round::new(vec!(1, 2), 1, Move::Single(four_of_diamonds));
+
+    let invalid_move = match r.play(1, Move::Single(three_of_clubs)) {
+        Err(_)  => true,
+        _       => false
+    };
+
+    assert!(invalid_move);
+}

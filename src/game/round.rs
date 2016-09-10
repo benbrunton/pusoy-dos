@@ -27,6 +27,10 @@ impl Round {
     /// play a move in the current round
     pub fn play(&self, player_id: i32, new_move: Move) -> Result<Round, Round> {
 
+        if player_id != self.current_player {
+            return Err(self.clone());
+        }
+
         let next_player = if self.current_player == *self.players.last().unwrap() {
             self.players.first().unwrap()
         } else {
@@ -34,14 +38,20 @@ impl Round {
             self.players.get(index + 1).unwrap()
         };
         
-        if new_move == Move::Pass {
+        if self.last_move == Move::Pass || new_move == Move::Pass {
         
             Ok(Round{
                 players: self.players.clone(), 
                 current_player: *next_player,
-                last_move: Move::Pass
+                last_move: self.last_move
             })
+        } else if self.valid_move(new_move) {
 
+            Ok(Round{
+                players: self.players.clone(), 
+                current_player: *next_player,
+                last_move: new_move
+            })
         } else {
             Err(self.clone())
         }
@@ -49,5 +59,10 @@ impl Round {
 
     pub fn get_next_player(&self) -> i32 {
         self.current_player
+    }
+
+    fn valid_move(&self, new_move: Move) -> bool {
+
+        new_move > self.last_move
     }
 }
