@@ -193,5 +193,22 @@ pub fn when_every_player_passes_the_last_player_to_move_starts_the_round(){
         Err(r) => r
     };
 
-    // player 3 pass - player1 pass - new round
+    let next_round = match next_round.play(3, Move::Pass){
+        Ok(r) => r,
+        Err(r) => r
+    };
+
+    let next_round = match next_round.play(1, Move::Pass){
+        Ok(r) => r,
+        Err(r) => r
+    };
+
+    let valid_move = match next_round.play(2, Move::Pair(ace_of_spades, ace_of_spades)){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert!(valid_move);
 }
+
+
