@@ -2,6 +2,11 @@ use std::fmt;
 
 use cards::types::*;
 
+#[macro_export]
+macro_rules! card {
+    ($rank:ident, $suit:ident) => (Card::new(Rank::$rank, Suit::$suit));
+}
+
 #[derive(Clone, Debug, PartialEq, Copy, PartialOrd)]
 /// An individual card
 pub struct Card{

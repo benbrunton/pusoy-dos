@@ -267,3 +267,38 @@ pub fn flush_beats_a_straight(){
 
 }
 
+#[test]
+pub fn full_house_beats_a_flush(){
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
+    let three_of_hearts = Card::new(Rank::Three, Suit::Hearts);
+    let three_of_diamonds = Card::new(Rank::Three, Suit::Diamonds);
+    let four_of_clubs = Card::new(Rank::Four, Suit::Clubs);
+    let four_of_hearts = Card::new(Rank::Four, Suit::Hearts);
+
+    let five_of_clubs = Card::new(Rank::Five, Suit::Clubs);
+    let six_of_clubs = Card::new(Rank::Six, Suit::Clubs);
+    let eight_of_clubs = Card::new(Rank::Eight, Suit::Clubs);
+
+    let full_house = build_move(vec!(three_of_clubs,
+                                three_of_hearts,
+                                three_of_diamonds,
+                                four_of_clubs,
+                                four_of_hearts)).unwrap();
+
+    let flush = build_move(vec!(three_of_clubs,
+                                four_of_clubs,
+                                five_of_clubs,
+                                six_of_clubs,
+                                eight_of_clubs)).unwrap();
+
+    let r = Round::new(vec!(1, 2), 1, flush);
+
+    let valid_move = match r.play(1, full_house){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert!(valid_move);
+}
+
+
