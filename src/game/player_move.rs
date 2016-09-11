@@ -80,18 +80,13 @@ fn check_valid_fct(cards: Vec<Card>) -> Option<Move> {
         },
         5 => {
             //flush or straight or straight flush
-           if cards[0].suit == cards[1].suit
-                && cards[1].suit == cards[2].suit
-                && cards[2].suit == cards[3].suit
-                && cards[3].suit == cards[4].suit {
-                    build_flush(cards)
-            } else if cards[0].next_rank().unwrap() == cards[1].rank
-                && cards[1].next_rank().unwrap() == cards[2].rank
-                && cards[2].next_rank().unwrap() == cards[3].rank
-                && cards[3].next_rank().unwrap() == cards[4].rank {
-                    build_straight(cards)
-            }else {
-                None
+            let straight = cards.iter().enumerate().all(|(i, &card)| i == 0 || card.previous_rank().is_some() && cards[i-1].rank == card.previous_rank().unwrap());
+            let flush = cards.iter().all(|&card| card.suit == cards[0].suit);
+            match (straight, flush) {
+                (true, true)    => build_straight_flush(cards),
+                (true, _)       => build_straight(cards),
+                (_, true)       => build_flush(cards),
+                _               => None
             }
         },
         _ => None
@@ -161,6 +156,19 @@ fn build_straight(cards: Vec<Card>) -> Option<Move> {
     match cards.len() {
         5 => Some(Move::FiveCardTrick(
                     Trick::Straight(
+                            cards[0],
+                            cards[1],
+                            cards[2],
+                            cards[3],
+                            cards[4]))),
+        _ => None
+    }
+}
+
+fn build_straight_flush(cards: Vec<Card>) -> Option<Move> {
+    match cards.len() {
+        5 => Some(Move::FiveCardTrick(
+                    Trick::StraightFlush(
                             cards[0],
                             cards[1],
                             cards[2],

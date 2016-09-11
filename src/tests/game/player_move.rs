@@ -200,6 +200,32 @@ pub fn a_straight_is_a_five_card_trick(){
 }
 
 #[test]
+pub fn a_straight_flush_is_a_five_card_trick(){
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
+    let four_of_clubs  = Card::new(Rank::Four, Suit::Clubs);
+    let five_of_clubs  = Card::new(Rank::Five, Suit::Clubs);
+    let six_of_clubs  = Card::new(Rank::Six, Suit::Clubs);
+    let seven_of_clubs = Card::new(Rank::Seven, Suit::Clubs);
+
+    let cards = vec!(three_of_clubs,
+                     four_of_clubs,
+                     five_of_clubs,
+                     six_of_clubs,
+                     seven_of_clubs);
+
+    let mv = build_move(cards);
+    let five_card_trick = Some(Move::FiveCardTrick(
+                Trick::StraightFlush(
+                     three_of_clubs,
+                     four_of_clubs,
+                     five_of_clubs,
+                     six_of_clubs,
+                     seven_of_clubs)));
+
+    assert_eq!(mv, five_card_trick);
+
+}
+#[test]
 pub fn full_house_is_a_five_card_trick(){
     let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
     let three_of_hearts  = Card::new(Rank::Three, Suit::Hearts);
