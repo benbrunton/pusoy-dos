@@ -3,12 +3,12 @@ use std::fmt;
 #[derive(Clone, Debug, PartialEq, Eq, Copy, Hash, PartialOrd)]
 /// Card suit
 pub enum Suit{
-    /// ♦
-    Diamonds,
     /// ♣
     Clubs,
     /// ♥
     Hearts,
+    /// ♦
+    Diamonds,
     /// ♠
     Spades
 }
@@ -38,30 +38,30 @@ pub enum Colour{
 /// Rank of a card
 pub enum Rank{
     /// 3
-    Three, 
+    Three,
     /// 4
-    Four, 
+    Four,
     /// 5
-    Five, 
+    Five,
     /// 6
-    Six, 
+    Six,
     /// 7
-    Seven, 
+    Seven,
     /// 8
-    Eight, 
+    Eight,
     /// 9
-    Nine, 
+    Nine,
     /// 10
-    Ten, 
+    Ten,
     /// Jack
-    Jack, 
+    Jack,
     /// Queen
-    Queen, 
+    Queen,
     /// King
     King,
     /// Ace
-    Ace, 
-    /// 2 
+    Ace,
+    /// 2
     Two
 }
 
