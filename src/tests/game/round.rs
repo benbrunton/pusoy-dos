@@ -301,4 +301,84 @@ pub fn full_house_beats_a_flush(){
     assert!(valid_move);
 }
 
+#[test]
+pub fn four_of_a_kind_beats_full_house(){
+    let full_house = build_move(vec!(
+                        card!(King, Hearts),
+                        card!(King, Spades),
+                        card!(King, Clubs),
+                        card!(Five, Hearts),
+                        card!(Five, Diamonds))).unwrap();
 
+    let four_of_kind = build_move(vec!(
+                        card!(Three, Spades),
+                        card!(Three, Clubs),
+                        card!(Three, Diamonds),
+                        card!(Three, Hearts),
+                        card!(Seven, Hearts))).unwrap();
+
+    let r = Round::new(vec!(1, 2), 1, full_house);
+
+    let valid_move = match r.play(1, four_of_kind){
+        Ok(_) => true,
+        _ => false
+    };
+
+    assert!(valid_move);
+
+}
+
+#[test]
+pub fn straight_flush_beats_four_of_a_kind(){
+    let straight_flush = build_move(vec!(
+                        card!(Three, Clubs),
+                        card!(Four, Clubs),
+                        card!(Five, Clubs),
+                        card!(Six, Clubs),
+                        card!(Seven, Clubs))).unwrap();
+
+    let four_of_kind = build_move(vec!(
+                        card!(Two, Spades),
+                        card!(Two, Clubs),
+                        card!(Two, Diamonds),
+                        card!(Two, Hearts),
+                        card!(Seven, Hearts))).unwrap();
+
+    let r = Round::new(vec!(1, 2), 1, four_of_kind);
+
+    let valid_move = match r.play(1, straight_flush){
+        Ok(_) => true,
+        _ => false
+    };
+
+    assert!(valid_move);
+
+
+}
+
+#[test]
+pub fn five_of_a_kind_is_the_baddest(){
+    let straight_flush = build_move(vec!(
+                        card!(Three, Clubs),
+                        card!(Four, Clubs),
+                        card!(Five, Clubs),
+                        card!(Six, Clubs),
+                        card!(Seven, Clubs))).unwrap();
+
+    let five_of_kind = build_move(vec!(
+                        card!(Two, Spades),
+                        card!(Two, Clubs),
+                        card!(Two, Diamonds),
+                        card!(Two, Hearts),
+                        card!(Two, Hearts))).unwrap();
+
+    let r = Round::new(vec!(1, 2), 1, straight_flush);
+
+    let valid_move = match r.play(1, five_of_kind){
+        Ok(_) => true,
+        _ => false
+    };
+
+    assert!(valid_move);
+
+}
