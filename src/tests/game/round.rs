@@ -67,15 +67,15 @@ pub fn rotating_the_player_will_bring_it_back_to_beginning_of_vec(){
     };
 
     assert_eq!(new_round.get_next_player(), 8);
-    
+
     let new_round = match new_round.play(8, Move::Pass){
         Ok(r) => r,
-        Err(r) => r    
-    }; 
+        Err(r) => r
+    };
 
     let new_round = match new_round.play(15, Move::Pass){
         Ok(r) => r,
-        Err(r) => r    
+        Err(r) => r
     };
 
     assert_eq!(new_round.get_next_player(), 3);
@@ -122,12 +122,12 @@ pub fn any_hand_can_be_passed_onto_an_emtpy_round(){
     };
 
     assert!(valid_move);
-    
+
 }
 
 #[test]
 pub fn single_can_be_beaten_by_a_higher_single(){
-    
+
     let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
     let four_of_diamonds = Card::new(Rank::Four, Suit::Diamonds);
 
@@ -143,7 +143,7 @@ pub fn single_can_be_beaten_by_a_higher_single(){
 
 #[test]
 pub fn single_cannot_be_beaten_by_a_higher_single(){
-    
+
     let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
     let four_of_diamonds = Card::new(Rank::Four, Suit::Diamonds);
 
@@ -155,6 +155,29 @@ pub fn single_cannot_be_beaten_by_a_higher_single(){
     };
 
     assert!(invalid_move);
+}
+
+#[test]
+pub fn single_card_respects_suit_order() {
+    let tc = Card::new(Rank::Three, Suit::Clubs);
+    let th = Card::new(Rank::Three, Suit::Hearts);
+    let td = Card::new(Rank::Three, Suit::Diamonds);
+
+    let r = Round::new(vec!(1,2,3), 1, Move::Single(th));
+
+    let invalid_move = match r.play(1, Move::Single(tc)) {
+         Err(_) => true,
+         _      => false
+    };
+
+    assert!(invalid_move);
+
+    let valid_move = match r.play(1, Move::Single(td)) {
+         Err(_) => false,
+         _      => true
+    };
+
+    assert!(valid_move);
 }
 
 #[test]
@@ -213,7 +236,7 @@ pub fn when_every_player_passes_the_last_player_to_move_starts_the_round(){
 
 #[test]
 pub fn flush_beats_a_straight(){
-    
+
     let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
     let four_of_spades = Card::new(Rank::Four, Suit::Spades);
     let five_of_clubs = Card::new(Rank::Five, Suit::Clubs);
@@ -221,10 +244,10 @@ pub fn flush_beats_a_straight(){
     let seven_of_clubs = Card::new(Rank::Seven, Suit::Clubs);
     let nine_of_clubs = Card::new(Rank::Nine, Suit::Clubs);
 
-    let straight = build_move(vec!(three_of_clubs, 
-                        four_of_spades, 
-                        five_of_clubs, 
-                        six_of_clubs, 
+    let straight = build_move(vec!(three_of_clubs,
+                        four_of_spades,
+                        five_of_clubs,
+                        six_of_clubs,
                         seven_of_clubs)).unwrap();
 
     let flush = build_move(vec!(three_of_clubs,
