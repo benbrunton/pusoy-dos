@@ -5,6 +5,7 @@ use cards::types::*;
 use cards::card::Card;
 
 /// a fresh deck of cards
+#[derive(Clone, Debug)]
 pub struct Deck(Vec<Card>);
 
 impl Deck {
@@ -19,6 +20,17 @@ impl Deck {
             }
         }
         Deck(cards)
+    }
+
+    pub fn combine(decks: Vec<Deck>) -> Deck{
+
+        let mut new_stack = vec!();
+
+        for deck in decks.iter() {
+            new_stack.extend(deck.0.iter().cloned());
+        }
+
+        Deck(new_stack)
     }
     
     /// take a card from the top of the deck

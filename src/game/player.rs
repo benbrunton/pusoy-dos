@@ -1,9 +1,8 @@
 use cards::card::Card;
 
 /// A player
+#[derive(Clone, Debug)]
 pub struct Player{
-    /// id
-    pub id: u32,
     hand: Vec<Card>
 }
 
@@ -11,10 +10,8 @@ impl Player{
     
     /// creates a new `Player`
     pub fn new() -> Player{
-        let id = 100;
 
         Player{
-            id: id,
             hand: vec!()
         }
     }
@@ -27,6 +24,11 @@ impl Player{
     /// receive a new card
     pub fn receive(&mut self, card: Card){
        self.hand.push(card); 
+    }
+
+    /// get the cards for a player
+    pub fn get_hand(&self) -> Vec<Card> {
+        self.hand.clone()
     }
 
 }

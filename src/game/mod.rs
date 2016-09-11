@@ -6,3 +6,6 @@ pub mod player_move;
 
 ///! a single round of play
 pub mod round;
+
+///! a game
+pub mod game;

@@ -10,6 +10,18 @@ pub fn it_gets_a_full_deck(){
 }
 
 #[test]
+pub fn decks_can_be_combined(){
+
+    let deck1 = Deck::new();
+    let deck2 = Deck::new();
+
+    let deck3 = Deck::combine(vec!(deck1, deck2));
+
+    assert_eq!(deck3.count(), 104);
+
+}
+
+#[test]
 pub fn rank_order_is_correct() {
     let three = Card::new(Rank::Three, Suit::Spades);
     let four = Card::new(Rank::Four, Suit::Spades);
