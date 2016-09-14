@@ -1,48 +1,50 @@
 use game::player::Player;
 use cards::deck::Deck;
 
-/// The Game module
-pub struct Game<'a> { 
-    players: Vec<&'a mut Player>,
-    deck: Deck    
+pub struct GameDefinition {
+    pub players: Vec<Player>
 }
 
-impl<'a> Game<'a>{
+/// The Game module
+pub struct Game { 
+    players: Vec<Player>
+}
 
-    pub fn new() -> Game<'a> {
+impl Game{
+
+    pub fn new(game_definition: GameDefinition) -> Game {
         Game{
-            players: vec!(),    
-            deck: Deck::new()
+            players: game_definition.players.clone()
         }
     }
-
-    /// returns index of latest added player
-    pub fn add_player(&mut self, player: &'a mut Player) -> usize{
-        self.players.push(player);
-        self.players.len() - 1
+    
+    /// get a player for querying information
+    pub fn get_player(&self, n: usize) -> Option<&Player> {
+       self.players.get(n)
     }
 
-    /// returns a clone of a player for checking
-    pub fn check_player(&self, n: usize) -> Player{
-        self.players[n].clone()
-    }
+    /// create a new Game
+    pub fn setup(&self) -> Result<Game, &str>{
+        let mut deck = Deck::new();
+        let mut player1 = Player::new();
+        let mut player2 = Player::new();
+        let mut index = 0;
 
-    pub fn add_deck(&mut self, deck: &Deck){
-        self.deck = deck.clone();
-    }
-
-    pub fn start(&mut self){
-
-        let mut player_index = 0;
-
-        while let Some(card) = self.deck.deal() {
-            self.players[player_index].receive(card);
-
-            player_index = player_index + 1;
-            if player_index >= self.players.len() {
-                player_index = 0;
+        while let Some(card) = deck.deal() {
+            if index == 0 {
+                player1.receive(card);
+                index = 1;
+            } else {
+                player2.receive(card);
+                index = 0;
             }
         }
+
+        Ok(
+            Game::new(GameDefinition{
+                players: vec!(player1, player2)
+            })
+        )
     }
 
 }

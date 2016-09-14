@@ -22,6 +22,7 @@ impl Deck {
         Deck(cards)
     }
 
+    /// combine 2 decks of cards
     pub fn combine(decks: Vec<Deck>) -> Deck{
 
         let mut new_stack = vec!();
