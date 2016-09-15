@@ -1,4 +1,6 @@
-use game::player_move::Move;
+use game::player_move::{ Move, Trick};
+use cards::card::Card;
+use cards::types::{Rank, Suit, Colour};
 
 /// single round
 #[derive(Clone, Debug, PartialEq)]
@@ -6,13 +8,18 @@ pub struct Round{
     players: Vec<i32>,
     current_player: i32,
     last_move: Move,
-    pass_count: i32
+    pass_count: i32,
+    first_round: bool
 }
 
 impl Round {
 
     /// create new round
-    pub fn new(players: Vec<i32>, current_player: i32, last_move: Move) -> Round {
+    pub fn new(players: Vec<i32>, 
+                current_player: i32, 
+                last_move: Move, 
+                passes: i32,
+                first_round: bool) -> Round {
 
         if !players.contains(&current_player){
             panic!("current player needs to be in the pool of players");
@@ -22,7 +29,8 @@ impl Round {
             players: players,
             current_player: current_player,
             last_move: last_move,
-            pass_count: 0
+            pass_count: passes,
+            first_round: first_round
         }
     }
 
@@ -30,6 +38,10 @@ impl Round {
     pub fn play(&self, player_id: i32, new_move: Move) -> Result<Round, Round> {
 
         if player_id != self.current_player {
+            return Err(self.clone());
+        }
+
+        if self.first_round && !self.includes_three(new_move){
             return Err(self.clone());
         }
 
@@ -52,7 +64,8 @@ impl Round {
                 players: self.players.clone(), 
                 current_player: next_player,
                 last_move: last_move,
-                pass_count: pass_count
+                pass_count: pass_count,
+                first_round: false
             })
  
         } else if self.valid_move(new_move) {
@@ -61,7 +74,8 @@ impl Round {
                 players: self.players.clone(), 
                 current_player: next_player,
                 last_move: new_move,
-                pass_count: 0
+                pass_count: 0,
+                first_round: false
             })
         } else {
             Err(self.clone())
@@ -71,6 +85,11 @@ impl Round {
     /// check who should play the next move
     pub fn get_next_player(&self) -> i32 {
         self.current_player
+    }
+
+    /// check the last move
+    pub fn get_last_move(&self) -> Move {
+        self.last_move
     }
     
     fn determine_next_player(&self) -> i32 {
@@ -113,5 +132,28 @@ impl Round {
         };
 
         matching_type && new_move > self.last_move
+    }
+
+    fn includes_three(&self, new_move: Move) -> bool {
+        let cards = match new_move {
+            Move::Single(x) => vec!(x),
+            Move::Pair(x, y) => vec!(x, y),
+            Move::Prial(x, y, z) => vec!(x, y, z),
+            Move::FiveCardTrick(Trick::Straight(x, y, z, a, b))        |
+            Move::FiveCardTrick(Trick::Flush(x, y, z, a, b))           |
+            Move::FiveCardTrick(Trick::FullHouse(x, y, z, a, b))       |
+            Move::FiveCardTrick(Trick::FourOfAKind(x, y, z, a, b))     |
+            Move::FiveCardTrick(Trick::StraightFlush(x, y, z, a, b))   |
+            Move::FiveCardTrick(Trick::FiveOfAKind(x, y, z, a, b))   => vec!(x, y, z, a, b) ,
+            Move::Pass => vec!()
+        };
+
+        for card in cards.iter() {
+            if *card == card!(Three, Clubs){
+                return true;
+            }
+        }
+
+        return false;
     }
 }

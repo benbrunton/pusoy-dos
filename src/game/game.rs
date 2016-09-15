@@ -1,6 +1,12 @@
 use game::player::Player;
 use cards::deck::Deck;
 
+/// A definition of a game in progress
+pub struct GameDefinition{
+    /// players
+    pub players: Vec<Player>
+}
+
 /// The Game module
 pub struct Game { 
     players: Vec<Player>
@@ -22,6 +28,16 @@ impl Game{
         Ok(
             Game{
                 players: players.clone()
+            }
+        )
+    }
+
+    /// load an existing game from a `GameDefinition`
+    pub fn load(game_definition: GameDefinition) -> Result<Game, &'static str>{
+
+        Ok(
+            Game{
+                players: game_definition.players
             }
         )
     }
