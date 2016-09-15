@@ -33,41 +33,44 @@ impl Deck {
 
         Deck(new_stack)
     }
-    
-    /// take a card from the top of the deck
-    pub fn deal(&mut self) -> Option<Card> {
-        self.0.pop()
+
+    /// deal to a number of players
+    pub fn deal(&self, players: usize) -> Vec<Vec<Card>> {
+        let mut dealt_stacks = vec!();
+        
+        while dealt_stacks.len() < players {
+            dealt_stacks.push(vec!());
+        }
+
+        let mut index = 0;
+
+        let mut deck_stack = self.0.clone();
+
+        while deck_stack.len() > 0 {
+
+           let card = deck_stack.pop(); 
+           dealt_stacks[index].push(card.unwrap());
+
+           index = if (index + 1) < players {
+               index + 1
+           } else {
+               0
+           }
+
+        }
+
+        dealt_stacks
+
     }
- 
+    
     /// rearrange the cards
     pub fn shuffle(&mut self) {
         let mut rng = rand::thread_rng();
         rng.shuffle(&mut self.0)
     }
     
-    /// remove n cards from the deck
-    /// and return the new Vec of cards
-    pub fn take(&mut self, n: usize) -> Vec<Card>{
-    
-        let mut temp_stack:Vec<Card> = Vec::new();
-        while temp_stack.len() < n {
-            if let Some(card) = self.deal(){
-                temp_stack.push(card);
-            }
-        }
-        
-        temp_stack
-    }
-    
     /// number of cards in the deck
     pub fn count(&self) -> usize {
         self.0.len()
-    }
-    
-    /// put a `Card` at the top of this `Deck`
-    pub fn add_to_top(&mut self, cards: Vec<Card>){
-        for card in cards {
-            self.0.push(card.clone());
-        }
     }
 }

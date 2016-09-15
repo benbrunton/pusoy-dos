@@ -22,6 +22,16 @@ pub fn decks_can_be_combined(){
 }
 
 #[test]
+pub fn decks_can_be_dealt(){
+    let deck = Deck::new();
+
+    let dealt = deck.deal(4);
+
+    assert_eq!(dealt.len(), 4);
+    assert_eq!(dealt[0].len(), 13);
+}
+
+#[test]
 pub fn rank_order_is_correct() {
     let three = Card::new(Rank::Three, Suit::Spades);
     let four = Card::new(Rank::Four, Suit::Spades);

@@ -16,14 +16,16 @@ impl Player{
         }
     }
 
+    /// give a player their hand
+    pub fn set_hand(&self, hand:Vec<Card>) -> Player {
+        Player{
+            hand: hand.clone()
+        }
+    }
+
     /// number of cards player has left
     pub fn remaining_cards(&self) -> usize {
        self.hand.len() 
-    }
-
-    /// receive a new card
-    pub fn receive(&mut self, card: Card){
-       self.hand.push(card); 
     }
 
     /// get the cards for a player

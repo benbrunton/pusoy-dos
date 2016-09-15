@@ -1,25 +1,24 @@
 use cards::types::*;
 use cards::card::Card;
-use cards::*;
 use game::player::Player;
 
 #[test]
-pub fn giving_a_player_a_card_increases_number_in_hand(){
-    let mut p1 = Player::new();
+pub fn a_player_can_have_a_hand_set(){
+    let p1 = Player::new();
+    let hand = vec!(card!(Ace, Spades), card!(Three, Clubs));
 
     assert_eq!(p1.remaining_cards(), 0);
     
-    p1.receive(card::Card::new(types::Rank::Ace, types::Suit::Spades));
+    let p2 = p1.set_hand(hand);
 
-    assert_eq!(p1.remaining_cards(), 1);
+    assert_eq!(p2.remaining_cards(), 2);
 }
 
 #[test]
 pub fn a_player_needs_to_know_what_cards_it_has(){
 
-    let mut p1 = Player::new();
-    p1.receive(card!(Three, Clubs));
-    p1.receive(card!(Two, Spades));
+    let p1 = Player::new();
+    let p1 = p1.set_hand(vec!(card!(Three, Clubs), card!(Two, Spades)));
 
     assert_eq!(p1.get_hand(), vec!(card!(Three, Clubs), card!(Two, Spades)));
 }
