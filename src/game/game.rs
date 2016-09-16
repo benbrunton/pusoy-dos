@@ -1,5 +1,7 @@
 use game::player::Player;
 use cards::deck::Deck;
+use cards::types::{Rank, Suit};
+use cards::card::Card;
 
 /// A definition of a game in progress
 pub struct GameDefinition{
@@ -45,6 +47,18 @@ impl Game{
     /// get a player for querying information
     pub fn get_player(&self, n: usize) -> Option<&Player> {
        self.players.get(n)
+    }
+
+    pub fn get_next_player(&self) -> Option<Player> {
+        let three_of_clubs = card!(Three, Clubs);
+        
+        for player in &self.players {
+            if player.get_hand().contains(&three_of_clubs){
+                return Some(player.clone());
+            }
+        }
+        
+        None
     }
 
 }

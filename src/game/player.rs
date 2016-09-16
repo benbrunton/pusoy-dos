@@ -1,7 +1,7 @@
 use cards::card::Card;
 
 /// A player
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Player{
     hand: Vec<Card>
 }

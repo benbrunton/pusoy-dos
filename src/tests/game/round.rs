@@ -429,3 +429,4 @@ pub fn first_round_has_to_include_three_of_clubs(){
     assert!(valid_move);
     assert!(valid_move2);
 }
+

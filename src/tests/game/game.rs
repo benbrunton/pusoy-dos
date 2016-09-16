@@ -40,10 +40,27 @@ pub fn game_can_load_in_any_state(){
     assert_eq!(player2_cards.len(), 2);
 }
 
-pub fn making_a_valid_move_returns_a_new_game(){
+#[test]
+pub fn the_player_with_three_clubs_starts_the_game(){
 
-//    let game = Game::setup(2);
+    let game = Game::setup(2).unwrap();
+    
+    let p1_cards = game.get_player(0).unwrap().get_hand();
+    let p2_cards = game.get_player(1).unwrap().get_hand();
 
- //   game.player_move(0, vec!(card!(
+    let next_player = match game.get_next_player(){
+        Some(player) => player.clone(),
+        None         => Player::new()    
+    };
+
+    let three_of_clubs = card!(Three, Clubs);
+
+    let three_belongs_to = if p1_cards.contains(&three_of_clubs) {
+        game.get_player(0).unwrap().clone()
+    } else {
+        game.get_player(1).unwrap().clone()
+    };
+
+    assert_eq!(three_belongs_to, next_player);
 
 }

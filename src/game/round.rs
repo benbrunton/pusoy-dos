@@ -1,6 +1,6 @@
 use game::player_move::{ Move, Trick};
 use cards::card::Card;
-use cards::types::{Rank, Suit, Colour};
+use cards::types::{Rank, Suit};
 
 /// single round
 #[derive(Clone, Debug, PartialEq)]
