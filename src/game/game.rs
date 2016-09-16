@@ -9,6 +9,7 @@ use game::player_move::{Move, build_move};
 pub struct GameDefinition{
     /// players
     pub players: Vec<Player>,
+    /// round
     pub round: Round
 }
 
@@ -50,11 +51,29 @@ impl Game{
         )
     }
 
+    /// takes a player_id and a vec of cards for a move
     pub fn player_move(&self, player_id:i32, cards:Vec<Card>) -> Result<GameDefinition, &'static str> {
-       let p_move = build_move(cards);
+       let p_move = build_move(cards.clone());
 
+        // only allow valid hands
        if p_move == None {
             return Err("Invalid move!");
+       }
+
+        // get player from id
+       let mut current_player = Player::new(-1);
+
+       for player in &self.players {
+            if player.get_id() == player_id {
+                current_player = player.clone();
+            }
+       }
+
+        // only allow cards in player hand
+       for card in cards {
+           if !current_player.get_hand().contains(&card){
+                return Err("Cannot play cards you do not have");
+           }
        }
 
        let round = match self.round.play(player_id, p_move.unwrap()){

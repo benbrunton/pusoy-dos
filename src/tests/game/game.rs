@@ -3,7 +3,7 @@
 // Maybe even some full games.
 
 use game::game::{ Game, GameDefinition};
-use game::player_move::{ Move, Trick};
+use game::player_move::Move;
 use cards::card::*;
 use cards::types::*;
 use game::player::Player;
@@ -72,13 +72,13 @@ pub fn the_player_with_three_clubs_starts_the_game(){
 pub fn valid_moves_return_new_game_definition(){
 
     let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs)));
-    let player2 = Player::new(0).set_hand(vec!(card!(Three, Diamonds)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
 
     let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Three, Clubs)), 0, false);
     
     let game_def = GameDefinition{
         players: vec!(player1, player2),
-        round:Round::new(vec!(0, 1), 0, Move::Pass, 0, false)
+        round:round
     };
 
     let game = Game::load(game_def).unwrap();
@@ -90,4 +90,25 @@ pub fn valid_moves_return_new_game_definition(){
     
 }
 
-// player can only play cards in it's hand
+#[test]
+pub fn player_can_only_play_cards_in_its_hand(){
+    let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
+
+    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Three, Clubs)), 0, false); 
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let invalid_move = match game.player_move(0, vec!(card!(Four, Diamonds))){
+        Err(_)  => true,
+        _       => false
+    };
+
+    assert!(invalid_move);
+
+}
