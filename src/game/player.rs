@@ -3,23 +3,31 @@ use cards::card::Card;
 /// A player
 #[derive(Clone, Debug, PartialEq)]
 pub struct Player{
-    hand: Vec<Card>
+    hand: Vec<Card>,
+    id: i32
 }
 
 impl Player{
     
     /// creates a new `Player`
-    pub fn new() -> Player{
+    pub fn new(id: i32) -> Player{
 
         Player{
-            hand: vec!()
+            hand: vec!(),
+            id: id
         }
+    }
+
+    /// get the player id
+    pub fn get_id(&self) -> i32 {
+        self.id
     }
 
     /// give a player their hand
     pub fn set_hand(&self, hand:Vec<Card>) -> Player {
         Player{
-            hand: hand.clone()
+            hand: hand.clone(),
+            id: self.id
         }
     }
 
