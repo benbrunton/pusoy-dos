@@ -30,7 +30,8 @@ pub fn game_can_load_in_any_state(){
 
     let game_definition = GameDefinition{
         players: vec!(player1, player2),
-        round:Round::new(vec!(0, 1), 0, Move::Pass, 0, false)
+        round:Round::new(vec!(0, 1), 0, Move::Pass, 0, false),
+        winner: None
     };
 
     let existing_game = Game::load(game_definition).unwrap();
@@ -78,7 +79,8 @@ pub fn valid_moves_return_new_game_definition(){
     
     let game_def = GameDefinition{
         players: vec!(player1, player2),
-        round:round
+        round:round,
+        winner: None
     };
 
     let game = Game::load(game_def).unwrap();
@@ -99,7 +101,8 @@ pub fn player_can_only_play_cards_in_its_hand(){
 
     let game_def = GameDefinition{
         players: vec!(player1, player2),
-        round: round
+        round: round,
+        winner: None
     };
 
     let game = Game::load(game_def).unwrap();
@@ -110,5 +113,47 @@ pub fn player_can_only_play_cards_in_its_hand(){
     };
 
     assert!(invalid_move);
+
+}
+
+#[test]
+pub fn player_loses_cards_when_move_is_valid(){
+    let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs), card!(Three, Hearts)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
+
+    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Three, Hearts)), 0, false); 
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winner: None
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game = game.player_move(0, vec!(card!(Three, Hearts))).unwrap();
+
+    assert_eq!(new_game.players[0].get_hand().len(), 2);
+
+}
+
+#[test]
+pub fn player_using_last_card_wins(){
+    let player1 = Player::new(0).set_hand(vec!(card!(Two, Hearts)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Queen, Diamonds)));
+
+    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Ten, Clubs)), 0, false);
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winner: None
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game_def = game.player_move(0, vec!(card!(Two, Hearts))).unwrap();
+
+    assert_eq!(new_game_def.winner.unwrap(), 0);
 
 }

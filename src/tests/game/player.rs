@@ -31,3 +31,12 @@ pub fn a_player_needs_to_know_what_cards_it_has(){
     assert_eq!(p1.get_hand(), vec!(card!(Three, Clubs), card!(Two, Spades)));
 }
 
+#[test]
+pub fn players_can_have_cards_taken_away(){
+    let p1 = Player::new(0).set_hand(vec!(card!(Three, Clubs), card!(Two, Spades), card!(Four, Diamonds)));
+
+    let remove_cards = vec!(card!(Three, Clubs));
+    let p1_updated = p1.remove(&remove_cards);
+
+    assert_eq!(p1_updated.get_hand().len(), 2);
+}

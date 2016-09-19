@@ -10,13 +10,16 @@ pub struct GameDefinition{
     /// players
     pub players: Vec<Player>,
     /// round
-    pub round: Round
+    pub round: Round,
+    /// winner of round
+    pub winner: Option<i32>
 }
 
 /// The Game module
 pub struct Game { 
     players: Vec<Player>,
-    round: Round
+    round: Round,
+    winner: Option<i32>
 }
 
 impl Game{
@@ -35,7 +38,8 @@ impl Game{
         Ok(
             GameDefinition{
                 players: players.clone(),
-                round: Game::get_empty_round()
+                round: Game::get_empty_round(),
+                winner: None
             }
         )
     }
@@ -46,7 +50,8 @@ impl Game{
         Ok(
             Game{
                 players: game_definition.players,
-                round: Game::get_empty_round()
+                round: Game::get_empty_round(),
+                winner: None
             }
         )
     }
@@ -70,7 +75,7 @@ impl Game{
        }
 
         // only allow cards in player hand
-       for card in cards {
+       for card in &cards {
            if !current_player.get_hand().contains(&card){
                 return Err("Cannot play cards you do not have");
            }
@@ -81,9 +86,29 @@ impl Game{
             Err(r) => r
        };
 
+       let mut players = vec!();
+
+       for player in &self.players{
+           if player.get_id() == current_player.get_id(){
+              current_player = player.remove(&cards);
+              players.push(current_player.clone());
+           }else{
+              players.push(player.clone()); 
+           }
+
+
+      }
+
+       let winner = if current_player.get_hand().len() == 0 {
+            Some(current_player.get_id())
+       }else{
+            self.winner
+       };
+
        Ok(GameDefinition{
-          players: self.players.clone(),
-          round: round
+          players: players.clone(),
+          round: round,
+          winner: winner
        })
        
     }

@@ -41,4 +41,18 @@ impl Player{
         self.hand.clone()
     }
 
+    /// take some cards from a player
+    pub fn remove(&self, cards:&Vec<Card>) -> Player {
+        let new_hand = self.hand.iter().filter(|&card| {
+           !cards.contains(card) 
+        }).map(|&card|{
+            card.clone()  
+        }).collect();
+
+        Player {
+            id: self.id,
+            hand: new_hand
+        }
+    }
+
 }
