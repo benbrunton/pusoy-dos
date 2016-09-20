@@ -121,7 +121,7 @@ pub fn player_loses_cards_when_move_is_valid(){
     let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs), card!(Three, Hearts)));
     let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
 
-    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Three, Hearts)), 0, false); 
+    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Three, Clubs)), 0, false); 
 
     let game_def = GameDefinition{
         players: vec!(player1, player2),
@@ -135,6 +135,26 @@ pub fn player_loses_cards_when_move_is_valid(){
 
     assert_eq!(new_game.players[0].get_hand().len(), 2);
 
+}
+
+#[test]
+pub fn player_keeps_cards_when_move_is_invalid(){
+    let player1 = Player::new(0).set_hand(vec!(card!(Four, Diamonds), card!(Six, Hearts)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Five, Clubs)));
+
+    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Queen, Spades)), 0, false);
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winner: None
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game = game.player_move(0, vec!(card!(Four, Diamonds))).unwrap();
+
+    assert_eq!(new_game.players[0].get_hand(), vec!(card!(Four, Diamonds), card!(Six, Hearts)));
 }
 
 #[test]

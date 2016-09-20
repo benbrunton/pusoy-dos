@@ -50,7 +50,7 @@ impl Game{
         Ok(
             Game{
                 players: game_definition.players,
-                round: Game::get_empty_round(),
+                round: game_definition.round, 
                 winner: None
             }
         )
@@ -66,13 +66,13 @@ impl Game{
        }
 
         // get player from id
-       let mut current_player = Player::new(-1);
+       let current_player = self.get_current_player(player_id);
 
-       for player in &self.players {
-            if player.get_id() == player_id {
-                current_player = player.clone();
-            }
-       }
+       if current_player == None {
+            return Err("Invalid player!");
+       }      
+
+       let mut current_player = current_player.unwrap();
 
         // only allow cards in player hand
        for card in &cards {
@@ -81,29 +81,18 @@ impl Game{
            }
        }
 
+       let mut players = self.players.clone();
        let round = match self.round.play(player_id, p_move.unwrap()){
-            Ok(r) => r,
+            Ok(r) => {
+                current_player = current_player.remove(&cards);
+                players = self.replace_current_player(&current_player);
+                r
+            },
             Err(r) => r
        };
 
-       let mut players = vec!();
 
-       for player in &self.players{
-           if player.get_id() == current_player.get_id(){
-              current_player = player.remove(&cards);
-              players.push(current_player.clone());
-           }else{
-              players.push(player.clone()); 
-           }
-
-
-      }
-
-       let winner = if current_player.get_hand().len() == 0 {
-            Some(current_player.get_id())
-       }else{
-            self.winner
-       };
+       let winner = self.get_winner(&current_player);
 
        Ok(GameDefinition{
           players: players.clone(),
@@ -135,4 +124,37 @@ impl Game{
         Round::new(vec!(0, 1), 0, Move::Pass, 0, false)
     }
 
+    fn get_winner(&self, current_player: &Player) -> Option<i32> {
+        if current_player.get_hand().len() == 0 {
+            Some(current_player.get_id())
+       }else{
+            self.winner
+       }
+    }
+
+    fn get_current_player(&self, player_id:i32) -> Option<Player> {
+
+       for player in &self.players {
+            if player.get_id() == player_id {
+                return Some(player.clone());
+            }
+       }
+
+       None
+    }
+
+    fn replace_current_player(&self, current_player: &Player) -> Vec<Player> {
+
+        let mut players = vec!();
+        for player in &self.players{
+            if player.get_id() == current_player.get_id(){
+                players.push(current_player.clone());
+            }else{
+                players.push(player.clone()); 
+            }
+        }
+
+        players
+
+    }
 }

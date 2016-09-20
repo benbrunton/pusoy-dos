@@ -430,3 +430,19 @@ pub fn first_round_has_to_include_three_of_clubs(){
     assert!(valid_move2);
 }
 
+#[test]
+pub fn single_four_cannot_beat_a_queen(){
+    let r = Round::new(vec!(0, 1),
+                        0,
+                        build_move(vec!(card!(Queen, Spades))).unwrap(),
+                        0,
+                        false);
+
+    let invalid_move = match r.play(0, build_move(vec!(card!(Four, Diamonds))).unwrap()) {
+        Err(_)  => true,
+        _       => false
+    };
+
+    assert!(invalid_move);
+}
+
