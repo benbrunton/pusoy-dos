@@ -2,6 +2,16 @@ use game::player_move::{ Move, Trick};
 use cards::card::Card;
 use cards::types::{Rank, Suit};
 
+/// definition
+#[derive(Clone, Debug, PartialEq)]
+pub struct RoundDefinition{
+    pub players: Vec<i32>,
+    pub current_player: i32,
+    pub last_move: Move,
+    pub pass_count: i32,
+    pub first_round: bool
+}
+
 /// single round
 #[derive(Clone, Debug, PartialEq)]
 pub struct Round{
@@ -90,6 +100,32 @@ impl Round {
     /// check the last move
     pub fn get_last_move(&self) -> Move {
         self.last_move
+    }
+
+    /// export round def
+    pub fn export(&self) -> RoundDefinition {
+        RoundDefinition{
+            players: self.players.clone(),
+            current_player: self.current_player,
+            last_move: self.last_move,
+            pass_count: self.pass_count,
+            first_round: self.first_round
+        }
+    }
+
+    /// update the players in the round
+    pub fn update_players(&self, players:Vec<i32>) -> Round {
+        let current_player = if players.contains(&self.current_player){
+            self.current_player
+        } else {
+            self.determine_next_player()
+        };
+
+        Round::new(players, 
+            current_player, 
+            self.last_move, 
+            self.pass_count, 
+            self.first_round)
     }
     
     fn determine_next_player(&self) -> i32 {

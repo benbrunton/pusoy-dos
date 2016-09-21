@@ -86,7 +86,8 @@ impl Game{
             Ok(r) => {
                 current_player = current_player.remove(&cards);
                 players = self.replace_current_player(&current_player);
-                r
+                let player_ids = self.get_players_for_next_round(&players);
+                r.update_players(player_ids)
             },
             Err(r) => r
        };
@@ -103,8 +104,8 @@ impl Game{
     }
   
     /// get a player for querying information
-    pub fn get_player(&self, n: usize) -> Option<&Player> {
-       self.players.get(n)
+    pub fn get_player(&self, id: i32) -> Option<Player> {
+       self.get_current_player(id)
     }
 
     /// get the next player to play
@@ -116,8 +117,10 @@ impl Game{
                 return Some(player.clone());
             }
         }
-        
-        None
+
+        let id = self.round.get_next_player();
+
+        self.get_player(id)
     }
 
     fn get_empty_round() -> Round {
@@ -156,5 +159,12 @@ impl Game{
 
         players
 
+    }
+
+    fn get_players_for_next_round(&self, players: &Vec<Player>) -> Vec<i32> {
+
+        players.iter()
+            .filter(|player|{ player.get_hand().len() > 0 })
+            .map(|player|{ player.get_id() }).collect()
     }
 }

@@ -1,4 +1,4 @@
-use game::round::Round;
+use game::round::{Round, RoundDefinition};
 use game::player_move::{ Move, build_move };
 use cards::card::Card;
 use cards::types::*;
@@ -444,5 +444,29 @@ pub fn single_four_cannot_beat_a_queen(){
     };
 
     assert!(invalid_move);
+}
+
+#[test]
+pub fn round_can_export_to_a_definition(){
+    let r = Round::new(vec!(0, 1), 0, Move::Pass, 0, false);
+
+    let r_def = RoundDefinition{
+        players: vec!(0, 1),
+        current_player: 0,
+        last_move: Move::Pass,
+        pass_count: 0,
+        first_round: false
+    };
+
+    assert_eq!(r.export(), r_def);
+}
+
+#[test]
+pub fn round_can_have_players_updated(){
+    let r = Round::new(vec!(1, 2, 3, 4), 1, Move::Pass, 0, false);
+    let new_round = r.update_players(vec!(1, 2, 3));
+
+    assert_eq!(new_round.export().players.len(), 3);
+
 }
 

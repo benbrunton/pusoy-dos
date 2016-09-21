@@ -1,6 +1,4 @@
 
-#![warn(missing_docs)]
-
 //! pusoy dos core crate
 
 extern crate rand;

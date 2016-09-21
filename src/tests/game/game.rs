@@ -26,7 +26,7 @@ pub fn game_can_deal_cards_to_each_player_on_setup(){
 pub fn game_can_load_in_any_state(){
 
     let player1 = Player::new(0).set_hand(vec!(card!(Ace, Spades)));
-    let player2 = Player::new(0).set_hand(vec!(card!(Two, Hearts), card!(Two, Clubs)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Two, Hearts), card!(Two, Clubs)));
 
     let game_definition = GameDefinition{
         players: vec!(player1, player2),
@@ -175,5 +175,33 @@ pub fn player_using_last_card_wins(){
     let new_game_def = game.player_move(0, vec!(card!(Two, Hearts))).unwrap();
 
     assert_eq!(new_game_def.winner.unwrap(), 0);
+
+}
+
+#[test]
+pub fn winner_is_removed_from_play_rotation(){
+    let player1 = Player::new(0).set_hand(vec!(card!(Two, Hearts)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Queen, Diamonds)));
+    let player3 = Player::new(2).set_hand(vec!(card!(Two, Clubs)));
+
+    let round = Round::new(vec!(0, 1, 2), 0, Move::Single(card!(Ten, Clubs)), 0, false);
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2, player3),
+        round: round,
+        winner: None
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game_def = game.player_move(0, vec!(card!(Two, Hearts))).unwrap();
+
+    let game = Game::load(new_game_def).unwrap();
+    let new_game_def = game.player_move(1, vec!()).unwrap();
+    let game = Game::load(new_game_def).unwrap();
+    let new_game_def = game.player_move(2, vec!()).unwrap();
+    let game = Game::load(new_game_def).unwrap();
+
+    assert_eq!(game.get_next_player().unwrap().get_id(), 1);
 
 }
