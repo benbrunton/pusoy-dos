@@ -205,3 +205,34 @@ pub fn winner_is_removed_from_play_rotation(){
     assert_eq!(game.get_next_player().unwrap().get_id(), 1);
 
 }
+
+#[test]
+pub fn subsequent_finishing_players_are_removed(){
+    let player1 = Player::new(0).set_hand(vec!());
+    let player2 = Player::new(1).set_hand(vec!(card!(Queen, Diamonds)));
+    let player3 = Player::new(2).set_hand(vec!(card!(Two, Clubs)));
+    let player4 = Player::new(3).set_hand(vec!(card!(Seven, Spades)));
+
+    let round = Round::new(vec!(1, 2, 3), 2, Move::Single(card!(Ten, Clubs)), 0, false);
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2, player3, player4),
+        round: round,
+        winner: None
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game_def = game.player_move(2, vec!(card!(Two, Clubs))).unwrap();
+
+    let game = Game::load(new_game_def).unwrap();
+    let new_game_def = game.player_move(3, vec!()).unwrap();
+    let game = Game::load(new_game_def).unwrap();
+    let new_game_def = game.player_move(1, vec!()).unwrap();
+    let game = Game::load(new_game_def).unwrap();
+
+    assert_eq!(game.get_next_player().unwrap().get_id(), 3);
+
+
+}
+
