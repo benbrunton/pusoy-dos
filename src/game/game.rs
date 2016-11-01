@@ -25,19 +25,24 @@ pub struct Game {
 impl Game{
  
     /// create a new Game
-    pub fn setup(player_count:usize) -> Result<GameDefinition, &'static str>{
+    pub fn setup(player_ids:Vec<i32>) -> Result<GameDefinition, &'static str>{
         let deck = Deck::new();
+        let player_count = player_ids.len();
 
         let dealt_cards = deck.deal(player_count);
+        let mut cards_iter = dealt_cards.iter();
 
-        let players:Vec<Player> = (0..player_count).map(|n: usize| {
-            let player = Player::new(0);
-            player.set_hand(dealt_cards[n].clone())
-        }).collect();
+        let mut players = vec!();
+
+        for id in player_ids.iter() {
+            let player = Player::new(*id);
+            let hand = cards_iter.next().unwrap();
+            players.push(player.set_hand(hand.clone()));
+        }
 
         Ok(
             GameDefinition{
-                players: players.clone(),
+                players: players,
                 round: Game::get_empty_round(),
                 winner: None
             }
