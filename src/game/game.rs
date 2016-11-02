@@ -43,7 +43,7 @@ impl Game{
         Ok(
             GameDefinition{
                 players: players,
-                round: Game::get_empty_round(),
+                round: Game::get_empty_round(player_ids.clone()),
                 winner: None
             }
         )
@@ -128,8 +128,8 @@ impl Game{
         self.get_player(id)
     }
 
-    fn get_empty_round() -> Round {
-        Round::new(vec!(0, 1), 0, Move::Pass, 0, false)
+    fn get_empty_round(player_ids:Vec<u64>) -> Round {
+        Round::new(player_ids, 0, Move::Pass, 0, false)
     }
 
     fn get_winner(&self, current_player: &Player) -> Option<u64> {
