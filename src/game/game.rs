@@ -40,10 +40,12 @@ impl Game{
             players.push(player.set_hand(hand.clone()));
         }
 
+        let next_player = Game::get_next(&players).unwrap().get_id();
+
         Ok(
             GameDefinition{
                 players: players,
-                round: Game::get_empty_round(player_ids.clone()),
+                round: Game::get_empty_round(player_ids.clone(), next_player),
                 winner: None
             }
         )
@@ -115,21 +117,29 @@ impl Game{
 
     /// get the next player to play
     pub fn get_next_player(&self) -> Option<Player> {
+
+        let id = match Game::get_next(&self.players) {
+            Some(player) => player.get_id(),
+            _ => self.round.get_next_player()
+        };
+
+        self.get_player(id)
+    }
+
+    fn get_next(players: &Vec<Player>) -> Option<Player> {
         let three_of_clubs = card!(Three, Clubs);
         
-        for player in &self.players {
+        for player in players {
             if player.get_hand().contains(&three_of_clubs){
                 return Some(player.clone());
             }
         }
 
-        let id = self.round.get_next_player();
-
-        self.get_player(id)
+        None
     }
 
-    fn get_empty_round(player_ids:Vec<u64>) -> Round {
-        Round::new(player_ids, 0, Move::Pass, 0, false)
+    fn get_empty_round(player_ids:Vec<u64>, next:u64) -> Round {
+        Round::new(player_ids, next, Move::Pass, 0, true)
     }
 
     fn get_winner(&self, current_player: &Player) -> Option<u64> {
