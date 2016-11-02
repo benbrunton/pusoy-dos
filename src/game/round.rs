@@ -5,30 +5,30 @@ use cards::types::{Rank, Suit};
 /// definition
 #[derive(Clone, Debug, PartialEq)]
 pub struct RoundDefinition{
-    pub players: Vec<i32>,
-    pub current_player: i32,
+    pub players: Vec<u64>,
+    pub current_player: u64,
     pub last_move: Move,
-    pub pass_count: i32,
+    pub pass_count: u64,
     pub first_round: bool
 }
 
 /// single round
 #[derive(Clone, Debug, PartialEq)]
 pub struct Round{
-    players: Vec<i32>,
-    current_player: i32,
+    players: Vec<u64>,
+    current_player: u64,
     last_move: Move,
-    pass_count: i32,
+    pass_count: u64,
     first_round: bool
 }
 
 impl Round {
 
     /// create new round
-    pub fn new(players: Vec<i32>, 
-                current_player: i32, 
+    pub fn new(players: Vec<u64>, 
+                current_player: u64, 
                 last_move: Move, 
-                passes: i32,
+                passes: u64,
                 first_round: bool) -> Round {
 
         if !players.contains(&current_player){
@@ -45,7 +45,7 @@ impl Round {
     }
 
     /// play a move in the current round
-    pub fn play(&self, player_id: i32, new_move: Move) -> Result<Round, Round> {
+    pub fn play(&self, player_id: u64, new_move: Move) -> Result<Round, Round> {
 
         if player_id != self.current_player {
             return Err(self.clone());
@@ -93,7 +93,7 @@ impl Round {
     }
     
     /// check who should play the next move
-    pub fn get_next_player(&self) -> i32 {
+    pub fn get_next_player(&self) -> u64 {
         self.current_player
     }
 
@@ -114,7 +114,7 @@ impl Round {
     }
 
     /// update the players in the round
-    pub fn update_players(&self, players:Vec<i32>) -> Round {
+    pub fn update_players(&self, players:Vec<u64>) -> Round {
         let current_player = if players.contains(&self.current_player){
             self.current_player
         } else {
@@ -128,7 +128,7 @@ impl Round {
             self.first_round)
     }
     
-    fn determine_next_player(&self) -> i32 {
+    fn determine_next_player(&self) -> u64 {
         if self.current_player == *self.players.last().unwrap() {
             *self.players.first().unwrap()
         } else {

@@ -12,20 +12,20 @@ pub struct GameDefinition{
     /// round
     pub round: Round,
     /// winner of round
-    pub winner: Option<i32>
+    pub winner: Option<u64>
 }
 
 /// The Game module
 pub struct Game { 
     players: Vec<Player>,
     round: Round,
-    winner: Option<i32>
+    winner: Option<u64>
 }
 
 impl Game{
  
     /// create a new Game
-    pub fn setup(player_ids:Vec<i32>) -> Result<GameDefinition, &'static str>{
+    pub fn setup(player_ids:Vec<u64>) -> Result<GameDefinition, &'static str>{
         let deck = Deck::new();
         let player_count = player_ids.len();
 
@@ -62,7 +62,7 @@ impl Game{
     }
 
     /// takes a player_id and a vec of cards for a move
-    pub fn player_move(&self, player_id:i32, cards:Vec<Card>) -> Result<GameDefinition, &'static str> {
+    pub fn player_move(&self, player_id:u64, cards:Vec<Card>) -> Result<GameDefinition, &'static str> {
        let p_move = build_move(cards.clone());
 
         // only allow valid hands
@@ -109,7 +109,7 @@ impl Game{
     }
   
     /// get a player for querying information
-    pub fn get_player(&self, id: i32) -> Option<Player> {
+    pub fn get_player(&self, id: u64) -> Option<Player> {
        self.get_current_player(id)
     }
 
@@ -132,7 +132,7 @@ impl Game{
         Round::new(vec!(0, 1), 0, Move::Pass, 0, false)
     }
 
-    fn get_winner(&self, current_player: &Player) -> Option<i32> {
+    fn get_winner(&self, current_player: &Player) -> Option<u64> {
         if current_player.get_hand().len() == 0 {
             Some(current_player.get_id())
        }else{
@@ -140,7 +140,7 @@ impl Game{
        }
     }
 
-    fn get_current_player(&self, player_id:i32) -> Option<Player> {
+    fn get_current_player(&self, player_id:u64) -> Option<Player> {
 
        for player in &self.players {
             if player.get_id() == player_id {
@@ -166,7 +166,7 @@ impl Game{
 
     }
 
-    fn get_players_for_next_round(&self, players: &Vec<Player>) -> Vec<i32> {
+    fn get_players_for_next_round(&self, players: &Vec<Player>) -> Vec<u64> {
 
         players.iter()
             .filter(|player|{ player.get_hand().len() > 0 })

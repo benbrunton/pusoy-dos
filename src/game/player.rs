@@ -4,13 +4,13 @@ use cards::card::Card;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Player{
     hand: Vec<Card>,
-    id: i32
+    id: u64
 }
 
 impl Player{
     
     /// creates a new `Player`
-    pub fn new(id: i32) -> Player{
+    pub fn new(id: u64) -> Player{
 
         Player{
             hand: vec!(),
@@ -19,7 +19,7 @@ impl Player{
     }
 
     /// get the player id
-    pub fn get_id(&self) -> i32 {
+    pub fn get_id(&self) -> u64 {
         self.id
     }
 
