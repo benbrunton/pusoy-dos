@@ -3,7 +3,7 @@ use cards::card::Card;
 use cards::types::{Rank, Suit};
 
 /// definition
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, RustcDecodable, RustcEncodable)]
 pub struct RoundDefinition{
     pub players: Vec<u64>,
     pub current_player: u64,

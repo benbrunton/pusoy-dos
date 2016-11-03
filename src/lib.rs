@@ -2,6 +2,7 @@
 //! pusoy dos core crate
 
 extern crate rand;
+extern crate rustc_serialize;
 
 ///! generic(ish) card module
 #[macro_use]
