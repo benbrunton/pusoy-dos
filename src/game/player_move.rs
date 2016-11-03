@@ -6,7 +6,7 @@ macro_rules! build_fct {
     ($trick:ident, $cards:ident) => (Some(Move::FiveCardTrick(Trick::$trick($cards[0], $cards[1], $cards[2], $cards[3], $cards[4]))));
 }
 
-#[derive(Clone, Debug, PartialEq, Copy, PartialOrd)]
+#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable)]
 /// Type of hand that can be played
 pub enum Move{
     /// No cards
@@ -21,7 +21,7 @@ pub enum Move{
     FiveCardTrick(Trick)
 }
 
-#[derive(Clone, Debug, PartialEq, Copy, PartialOrd)]
+#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable)]
 /// Type of 5 card trick
 pub enum Trick{
     /// sequence
