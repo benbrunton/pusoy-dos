@@ -6,6 +6,7 @@ use cards::card::Card;
 use game::player_move::{Move, build_move};
 
 /// A definition of a game in progress
+#[derive(Clone, Debug)]
 pub struct GameDefinition{
     /// players
     pub players: Vec<Player>,
