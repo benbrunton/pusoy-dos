@@ -66,8 +66,10 @@ impl Round {
 
             let last_move = if pass_count as usize >= self.players.len() - 1 {
                 Move::Pass
-            } else {
+            } else if new_move == Move::Pass {
                 self.last_move
+            } else {
+                new_move    
             };
            
             Ok(Round{
