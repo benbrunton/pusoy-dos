@@ -132,8 +132,18 @@ impl Round {
         if self.current_player == *self.players.last().unwrap() {
             *self.players.first().unwrap()
         } else {
-            let index = self.players.binary_search(&self.current_player).unwrap();
-            *self.players.get(index + 1).unwrap()
+
+            let mut index = 0;
+            let mut i = 0; 
+
+            for player in &self.players{
+                i = i + 1;
+                if self.current_player == *player {
+                    index = i;
+                }
+            }
+
+            *self.players.get(index).unwrap()
         }
     }
 

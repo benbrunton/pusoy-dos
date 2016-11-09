@@ -45,14 +45,28 @@ pub fn it_returns_an_error_when_a_move_is_invalid(){
 #[test]
 pub fn a_valid_move_rotates_the_players(){
 
-    let r = Round::new(vec!(1, 2, 3), 1, Move::Pass, 0, false);
+    let r = Round::new(vec!(7, 13, 3), 7, Move::Pass, 0, false);
 
-    let new_round = match r.play(1, Move::Pass) {
+    let new_round = match r.play(7, Move::Pass) {
         Ok(r) => r,
         Err(r) => r
     };
 
-    assert_eq!(new_round.get_next_player(), 2);
+    assert_eq!(new_round.get_next_player(), 13);
+
+}
+
+#[test]
+pub fn a_valid_first_move_rotates_the_players(){
+
+    let r = Round::new(vec!(5, 4), 5, Move::Pass, 0, true);
+
+    let new_round = match r.play(5, Move::Single(card!(Three, Clubs))) {
+        Ok(r) => r,
+        Err(r) => r
+    };
+
+    assert_eq!(new_round.get_next_player(), 4);
 
 }
 
