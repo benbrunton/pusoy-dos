@@ -27,7 +27,10 @@ impl Game{
  
     /// create a new Game
     pub fn setup(player_ids:Vec<u64>) -> Result<GameDefinition, &'static str>{
-        let deck = Deck::new();
+        let mut deck = Deck::new();
+
+        deck.shuffle();
+
         let player_count = player_ids.len();
 
         let dealt_cards = deck.deal(player_count);
