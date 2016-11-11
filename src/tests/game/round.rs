@@ -484,3 +484,27 @@ pub fn round_can_have_players_updated(){
 
 }
 
+#[test]
+pub fn fours_on_aces_beats_threes_on_twos(){
+    let r = Round::new(vec!(0, 1),
+                    0,
+                    build_move(vec!(card!(Three, Clubs), 
+                        card!(Three, Spades), 
+                        card!(Three, Diamonds), 
+                        card!(Two, Spades),
+                        card!(Two, Diamonds))).unwrap(),
+                    0,
+                    false);
+
+    let valid_move = match r.play(0, build_move(vec!(card!(Four, Clubs),
+                                                    card!(Four, Diamonds),
+                                                    card!(Four, Hearts),
+                                                    card!(Ace, Spades),
+                                                    card!(Ace, Hearts))).unwrap()) {
+            Ok(_) => true,
+            _     => false
+    };
+
+    assert_eq!(valid_move, true);
+
+}
