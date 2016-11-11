@@ -110,10 +110,10 @@ pub fn four_of_a_kind_is_a_five_card_trick(){
     let mv = build_move(cards);
     let five_card_trick = Some(Move::FiveCardTrick(
                                         Trick::FourOfAKind(
-                                                   ace_of_spades,
-                                                   ace_of_diamonds,
-                                                   ace_of_hearts,
                                                    ace_of_clubs,
+                                                   ace_of_hearts,
+                                                   ace_of_diamonds,
+                                                   ace_of_spades,
                                                    two_of_clubs)));
 
     assert_eq!(five_card_trick, mv);
@@ -136,11 +136,11 @@ pub fn five_of_a_kind_is_a_five_card_trick(){
 
     let five_card_trick = Some(Move::FiveCardTrick(
                                         Trick::FiveOfAKind(
-                                                   ace_of_spades,
-                                                   ace_of_spades,
-                                                   ace_of_hearts,
                                                    ace_of_clubs,
-                                                   ace_of_diamonds)));
+                                                   ace_of_hearts,
+                                                   ace_of_diamonds,
+                                                   ace_of_spades,
+                                                   ace_of_spades)));
     assert_eq!(five_card_trick, mv);
 }
 
@@ -162,11 +162,11 @@ pub fn five_of_the_same_suit_is_a_flush(){
 
     let five_card_trick = Some(Move::FiveCardTrick(
                                                 Trick::Flush(
-                                                    ace_of_spades,
                                                     three_of_spades,
                                                     five_of_spades,
                                                     seven_of_spades,
-                                                    nine_of_spades)));
+                                                    nine_of_spades,
+                                                    ace_of_spades)));
 
     assert_eq!(five_card_trick, mv);
 
@@ -245,8 +245,29 @@ pub fn full_house_is_a_five_card_trick(){
                      three_of_clubs,
                      three_of_hearts,
                      three_of_spades,
-                     two_of_spades,
-                     two_of_diamonds)));
+                     two_of_diamonds,
+                     two_of_spades)));
+
+    assert_eq!(mv, five_card_trick);
+}
+
+#[test]
+pub fn straight_can_be_selected_in_any_order(){
+
+    let five_diamonds = card!(Five, Diamonds);
+    let three_clubs = card!(Three, Clubs);
+    let four_spades = card!(Four, Spades);
+    let seven_clubs = card!(Seven, Clubs);
+    let six_hearts = card!(Six, Hearts);
+
+    let mv = build_move(vec!(five_diamonds, three_clubs, four_spades, seven_clubs, six_hearts));
+
+    let five_card_trick = Some(Move::FiveCardTrick(
+                                Trick::Straight(three_clubs,
+                                    four_spades,
+                                    five_diamonds,
+                                    six_hearts,
+                                    seven_clubs)));
 
     assert_eq!(mv, five_card_trick);
 }

@@ -72,6 +72,7 @@ fn check_valid_prial(cards: Vec<Card>) -> Option<Move> {
 fn check_valid_fct(cards: Vec<Card>) -> Option<Move> {
 
     let rank_count = get_counts(cards.clone());
+    let cards = sort_cards(cards);
     match rank_count.len() {
         1 => build_fct!(FiveOfAKind, cards),
         2 => {
@@ -95,6 +96,12 @@ fn check_valid_fct(cards: Vec<Card>) -> Option<Move> {
         },
         _ => None
     }
+}
+
+fn sort_cards(cards: Vec<Card>) -> Vec<Card> {
+    let mut c = cards.clone();
+    c.sort();
+    c
 }
 
 fn get_counts(cards: Vec<Card>) -> HashMap<Rank, usize> {

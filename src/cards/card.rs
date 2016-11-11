@@ -7,7 +7,7 @@ macro_rules! card {
     ($rank:ident, $suit:ident) => (Card::new(Rank::$rank, Suit::$suit));
 }
 
-#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable, Eq, Ord)]
 /// An individual card
 pub struct Card{
     /// The `Rank` of the card
