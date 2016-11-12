@@ -271,3 +271,22 @@ pub fn straight_can_be_selected_in_any_order(){
 
     assert_eq!(mv, five_card_trick);
 }
+
+#[test]
+pub fn full_house_can_be_in_any_order(){
+    let mv = build_move(vec!(
+                card!(Five, Clubs),
+                card!(Queen, Hearts),
+                card!(Queen, Spades),
+                card!(Five, Diamonds),
+                card!(Queen, Diamonds)));
+
+    let full_house = Some(Move::FiveCardTrick(Trick::FullHouse(
+                            card!(Five, Clubs),
+                            card!(Five, Diamonds),
+                            card!(Queen, Hearts),
+                            card!(Queen, Diamonds),
+                            card!(Queen, Spades))));
+
+    assert_eq!(mv, full_house);
+}
