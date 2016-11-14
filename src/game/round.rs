@@ -1,4 +1,4 @@
-use game::player_move::{ Move, Trick};
+use game::player_move::Move;
 use cards::card::Card;
 use cards::types::{Rank, Suit};
 

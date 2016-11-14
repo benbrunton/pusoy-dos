@@ -27,7 +27,7 @@ pub enum Move{
     FiveCardTrick(Trick)
 }
 
-#[derive(Clone, Debug, PartialEq, PartialOrd, Copy, RustcDecodable, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Eq, Ord, Copy, RustcDecodable, RustcEncodable)]
 /// Type of 5 card trick
 pub enum TrickType{
     /// sequence
@@ -54,36 +54,52 @@ impl PartialOrd for Trick {
 
     fn partial_cmp(&self, other: &Trick) -> Option<Ordering> {
 
-        match (self.trick_type, other.trick_type) {
-            (TrickType::FullHouse, TrickType::FullHouse) => compare_full_house(self, other),
-            _ if self.trick_type > other.trick_type   =>  Some(Ordering::Greater),
-			_ if self.trick_type < other.trick_type   =>  Some(Ordering::Less), 
-			_  						=>  Some(Ordering::Equal) 
+        if self.trick_type == other.trick_type {
+            match self.trick_type {
+                TrickType::Flush => compare_flush(self, other),
+                TrickType::FullHouse => compare_full_house(self, other),
+                _ => self.cards.partial_cmp(&other.cards)
+            }
+        } else {
+            self.trick_type.partial_cmp(&other.trick_type)
         }
 
     }
 }
 
-// todo - this is super simple
-fn compare_full_house(self_trick:&Trick, other:&Trick) -> Option<Ordering> {
+// todo - this is super simple - it should the full highest card
+// not just the rank into account
+fn compare_full_house(this:&Trick, other:&Trick) -> Option<Ordering> {
 
-	let counts = get_counts(self_trick.cards.to_vec());
-	let mut self_rank = Rank::Three;
+    let this_top_card = get_top_full_house_card(this.cards.to_vec());
+    let other_top_card = get_top_full_house_card(other.cards.to_vec());
+	this_top_card.partial_cmp(&other_top_card)
+}
+
+fn get_top_full_house_card(cards:Vec<Card>) -> Rank {
+	let counts = get_counts(cards);
 	for (rank, count) in &counts {
 		if *count == 3 {
-			self_rank = *rank;
-		}	
-	}		
-
-	let counts = get_counts(other.cards.to_vec());
-	let mut other_rank = Rank::Three;
-	for (rank, count) in &counts {
-		if *count == 3 {
-			other_rank = *rank;
+            return rank.to_owned();
 		}	
 	}
+    
+    panic!("it's fucked");	
+}
 
-	Some(self_rank.cmp(&other_rank))
+fn compare_flush(this:&Trick, other:&Trick) -> Option<Ordering> {
+    let top_this = get_max_card(this.cards.to_vec());
+    let top_other = get_max_card(other.cards.to_vec());
+
+    top_this.partial_cmp(&top_other)
+}
+
+fn get_max_card(cards:Vec<Card>) -> Card{
+    let mut c = cards.clone();
+    c.sort();
+    c.reverse();
+
+    c.first().unwrap().to_owned()
 }
 
 

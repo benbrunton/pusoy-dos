@@ -534,3 +534,33 @@ pub fn kings_on_fours_beats_fives_on_tens(){
 
 
 }
+
+#[test]
+pub fn ten_club_high_flush_beats_nine_spade_high(){
+
+    let ten_club_high_flush = build_move(vec!(card!(Ten, Clubs),
+                                    card!(Three, Clubs),
+                                    card!(Four,Clubs),
+                                    card!(Five, Clubs),
+                                    card!(Six, Clubs))).unwrap();
+
+    let nine_spade_high_flush = build_move(vec!(card!(Nine, Spades),
+                                    card!(Four, Spades),
+                                    card!(Five, Spades),
+                                    card!(Six, Spades),
+                                    card!(Seven, Spades))).unwrap();
+
+
+    let r = Round::new(vec!(0, 1),
+                        0,
+                        nine_spade_high_flush,
+                        0,
+                        false);
+
+    let valid_move = match r.play(0, ten_club_high_flush){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert_eq!(valid_move, true);
+}
