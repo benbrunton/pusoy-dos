@@ -2,8 +2,14 @@ use cards::card::Card;
 use cards::types::*;
 use std::collections::HashMap;
 
+use std::cmp::Ordering;
+
 macro_rules! build_fct {
-    ($trick:ident, $cards:ident) => (Some(Move::FiveCardTrick(Trick::$trick($cards[0], $cards[1], $cards[2], $cards[3], $cards[4]))));
+    ($trick:ident, $cards:ident) => (Some(Move::FiveCardTrick(
+						Trick{
+							trick_type:TrickType::$trick,
+							cards:[$cards[0], $cards[1], $cards[2], $cards[3], $cards[4]]
+						})));
 }
 
 #[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable)]
@@ -21,22 +27,65 @@ pub enum Move{
     FiveCardTrick(Trick)
 }
 
-#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Copy, RustcDecodable, RustcEncodable)]
 /// Type of 5 card trick
-pub enum Trick{
+pub enum TrickType{
     /// sequence
-    Straight(Card, Card, Card, Card, Card),
+    Straight,
     /// same suit
-    Flush(Card, Card, Card, Card, Card),
+    Flush,
     /// 3 over 2
-    FullHouse(Card, Card, Card, Card, Card),
+    FullHouse,
     /// 4 of same, 1 different
-    FourOfAKind(Card, Card, Card, Card, Card),
+    FourOfAKind,
     /// sequence of same suit
-    StraightFlush(Card, Card, Card, Card, Card),
+    StraightFlush,
     /// 5 of same
-    FiveOfAKind(Card, Card, Card, Card, Card)
+    FiveOfAKind,
 }
+
+#[derive(Clone, Debug, PartialEq, Copy, RustcDecodable, RustcEncodable)]
+pub struct Trick{
+	pub trick_type: TrickType,
+	pub cards: [Card;5]	
+}
+
+impl PartialOrd for Trick {
+
+    fn partial_cmp(&self, other: &Trick) -> Option<Ordering> {
+
+        match (self.trick_type, other.trick_type) {
+            (TrickType::FullHouse, TrickType::FullHouse) => compare_full_house(self, other),
+            _ if self.trick_type > other.trick_type   =>  Some(Ordering::Greater),
+			_ if self.trick_type < other.trick_type   =>  Some(Ordering::Less), 
+			_  						=>  Some(Ordering::Equal) 
+        }
+
+    }
+}
+
+// todo - this is super simple
+fn compare_full_house(self_trick:&Trick, other:&Trick) -> Option<Ordering> {
+
+	let counts = get_counts(self_trick.cards.to_vec());
+	let mut self_rank = Rank::Three;
+	for (rank, count) in &counts {
+		if *count == 3 {
+			self_rank = *rank;
+		}	
+	}		
+
+	let counts = get_counts(other.cards.to_vec());
+	let mut other_rank = Rank::Three;
+	for (rank, count) in &counts {
+		if *count == 3 {
+			other_rank = *rank;
+		}	
+	}
+
+	Some(self_rank.cmp(&other_rank))
+}
+
 
 /// builds a move from a Vec of cards
 pub fn build_move(cards: Vec<Card>) -> Option<Move> {

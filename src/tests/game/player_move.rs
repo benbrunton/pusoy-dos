@@ -109,12 +109,14 @@ pub fn four_of_a_kind_is_a_five_card_trick(){
 
     let mv = build_move(cards);
     let five_card_trick = Some(Move::FiveCardTrick(
-                                        Trick::FourOfAKind(
+                                        Trick{
+                                            trick_type: TrickType::FourOfAKind,
+                                            cards: [
                                                    ace_of_clubs,
                                                    ace_of_hearts,
                                                    ace_of_diamonds,
                                                    ace_of_spades,
-                                                   two_of_clubs)));
+                                                   two_of_clubs]}));
 
     assert_eq!(five_card_trick, mv);
 }
@@ -135,12 +137,14 @@ pub fn five_of_a_kind_is_a_five_card_trick(){
     let mv = build_move(cards);
 
     let five_card_trick = Some(Move::FiveCardTrick(
-                                        Trick::FiveOfAKind(
+                                        Trick{
+                                            trick_type: TrickType::FiveOfAKind,
+                                            cards:[
                                                    ace_of_clubs,
                                                    ace_of_hearts,
                                                    ace_of_diamonds,
                                                    ace_of_spades,
-                                                   ace_of_spades)));
+                                                   ace_of_spades]}));
     assert_eq!(five_card_trick, mv);
 }
 
@@ -161,12 +165,14 @@ pub fn five_of_the_same_suit_is_a_flush(){
     let mv = build_move(cards);
 
     let five_card_trick = Some(Move::FiveCardTrick(
-                                                Trick::Flush(
-                                                    three_of_spades,
-                                                    five_of_spades,
-                                                    seven_of_spades,
-                                                    nine_of_spades,
-                                                    ace_of_spades)));
+                                Trick{
+                                    trick_type: TrickType::Flush,
+                                    cards: [
+                                    three_of_spades,
+                                    five_of_spades,
+                                    seven_of_spades,
+                                    nine_of_spades,
+                                    ace_of_spades]}));
 
     assert_eq!(five_card_trick, mv);
 
@@ -188,12 +194,14 @@ pub fn a_straight_is_a_five_card_trick(){
 
     let mv = build_move(cards);
     let five_card_trick = Some(Move::FiveCardTrick(
-                Trick::Straight(
+                Trick{
+                    trick_type: TrickType::Straight,
+                    cards: [
                      three_of_clubs,
                      four_of_hearts,
                      five_of_spades,
                      six_of_spades,
-                     seven_of_diamonds)));
+                     seven_of_diamonds]}));
 
     assert_eq!(mv, five_card_trick);
 
@@ -215,12 +223,14 @@ pub fn a_straight_flush_is_a_five_card_trick(){
 
     let mv = build_move(cards);
     let five_card_trick = Some(Move::FiveCardTrick(
-                Trick::StraightFlush(
+                Trick{
+                    trick_type: TrickType::StraightFlush,
+                    cards: [
                      three_of_clubs,
                      four_of_clubs,
                      five_of_clubs,
                      six_of_clubs,
-                     seven_of_clubs)));
+                     seven_of_clubs]}));
 
     assert_eq!(mv, five_card_trick);
 
@@ -241,12 +251,14 @@ pub fn full_house_is_a_five_card_trick(){
 
     let mv = build_move(cards);
     let five_card_trick = Some(Move::FiveCardTrick(
-                Trick::FullHouse(
+                Trick{
+                    trick_type: TrickType::FullHouse,
+                    cards:[
                      three_of_clubs,
                      three_of_hearts,
                      three_of_spades,
                      two_of_diamonds,
-                     two_of_spades)));
+                     two_of_spades]}));
 
     assert_eq!(mv, five_card_trick);
 }
@@ -263,11 +275,13 @@ pub fn straight_can_be_selected_in_any_order(){
     let mv = build_move(vec!(five_diamonds, three_clubs, four_spades, seven_clubs, six_hearts));
 
     let five_card_trick = Some(Move::FiveCardTrick(
-                                Trick::Straight(three_clubs,
+                                Trick{
+                                    trick_type: TrickType::Straight,
+                                    cards:[three_clubs,
                                     four_spades,
                                     five_diamonds,
                                     six_hearts,
-                                    seven_clubs)));
+                                    seven_clubs]}));
 
     assert_eq!(mv, five_card_trick);
 }
@@ -281,12 +295,17 @@ pub fn full_house_can_be_in_any_order(){
                 card!(Five, Diamonds),
                 card!(Queen, Diamonds)));
 
-    let full_house = Some(Move::FiveCardTrick(Trick::FullHouse(
-                            card!(Five, Clubs),
-                            card!(Five, Diamonds),
-                            card!(Queen, Hearts),
-                            card!(Queen, Diamonds),
-                            card!(Queen, Spades))));
+    let full_house = Some(Move::FiveCardTrick(
+                            Trick{
+                                trick_type: TrickType::FullHouse,
+                                cards: [
+                                    card!(Five, Clubs),
+                                    card!(Five, Diamonds),
+                                    card!(Queen, Hearts),
+                                    card!(Queen, Diamonds),
+                                    card!(Queen, Spades)
+                                ]
+                            }));
 
     assert_eq!(mv, full_house);
 }

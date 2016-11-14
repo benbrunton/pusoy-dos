@@ -508,3 +508,29 @@ pub fn fours_on_aces_beats_threes_on_twos(){
     assert_eq!(valid_move, true);
 
 }
+
+#[test]
+pub fn kings_on_fours_beats_fives_on_tens(){
+    let r = Round::new(vec!(0, 1),
+                    0,
+                    build_move(vec!(card!(Five, Clubs), 
+                        card!(Five, Spades), 
+                        card!(Five, Diamonds), 
+                        card!(Ten, Spades),
+                        card!(Ten, Diamonds))).unwrap(),
+                    0,
+                    false);
+
+    let valid_move = match r.play(0, build_move(vec!(card!(King, Clubs),
+                                                    card!(King, Diamonds),
+                                                    card!(King, Hearts),
+                                                    card!(Four, Spades),
+                                                    card!(Four, Hearts))).unwrap()) {
+            Ok(_) => true,
+            _     => false
+    };
+
+    assert_eq!(valid_move, true);
+
+
+}

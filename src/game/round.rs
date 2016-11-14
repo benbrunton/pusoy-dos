@@ -187,12 +187,7 @@ impl Round {
             Move::Single(x) => vec!(x),
             Move::Pair(x, y) => vec!(x, y),
             Move::Prial(x, y, z) => vec!(x, y, z),
-            Move::FiveCardTrick(Trick::Straight(x, y, z, a, b))        |
-            Move::FiveCardTrick(Trick::Flush(x, y, z, a, b))           |
-            Move::FiveCardTrick(Trick::FullHouse(x, y, z, a, b))       |
-            Move::FiveCardTrick(Trick::FourOfAKind(x, y, z, a, b))     |
-            Move::FiveCardTrick(Trick::StraightFlush(x, y, z, a, b))   |
-            Move::FiveCardTrick(Trick::FiveOfAKind(x, y, z, a, b))   => vec!(x, y, z, a, b) ,
+            Move::FiveCardTrick(t) => t.cards.to_vec(),
             Move::Pass => vec!()
         };
 
