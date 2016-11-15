@@ -56,8 +56,10 @@ impl PartialOrd for Trick {
 
         if self.trick_type == other.trick_type {
             match self.trick_type {
-                TrickType::Flush => compare_flush(self, other),
-                TrickType::FullHouse => compare_full_house(self, other),
+                TrickType::Flush 
+                    | TrickType::FiveOfAKind => compare_top_card(self, other),
+                TrickType::FullHouse => compare_main_set(self, other, 3),
+                TrickType::FourOfAKind => compare_main_set(self, other, 4),
                 _ => self.cards.partial_cmp(&other.cards)
             }
         } else {
@@ -67,33 +69,13 @@ impl PartialOrd for Trick {
     }
 }
 
-fn compare_full_house(this:&Trick, other:&Trick) -> Option<Ordering> {
-
-    let this_top_card = get_top_full_house_card(this.cards.to_vec());
-    let other_top_card = get_top_full_house_card(other.cards.to_vec());
+fn compare_main_set(this:&Trick, other:&Trick, n:usize) -> Option<Ordering> {
+    let this_top_card = get_top_of_n(this.cards.to_vec(), n);
+    let other_top_card = get_top_of_n(other.cards.to_vec(), n);
 	this_top_card.partial_cmp(&other_top_card)
 }
 
-fn get_top_full_house_card(cards:Vec<Card>) -> Card {
-	let counts = get_counts(cards.clone());
-    let mut top_rank = Rank::Three;
-    
-	for (rank, count) in &counts {
-		if *count == 3 {
-            top_rank = *rank;
-		}
-	}
-
-
-    let valid_cards:Vec<Card> = cards.iter()
-                .filter(|&c|{ c.rank == top_rank })
-                .map(|&c|{ c.clone() }).collect();
-
-    get_max_card(valid_cards)
-    
-}
-
-fn compare_flush(this:&Trick, other:&Trick) -> Option<Ordering> {
+fn compare_top_card(this:&Trick, other:&Trick) -> Option<Ordering> {
     let top_this = get_max_card(this.cards.to_vec());
     let top_other = get_max_card(other.cards.to_vec());
 
@@ -106,6 +88,27 @@ fn get_max_card(cards:Vec<Card>) -> Card{
     c.reverse();
 
     c.first().unwrap().to_owned()
+}
+
+fn get_top_of_n(cards: Vec<Card>, n:usize) -> Card{
+
+    let counts = get_counts(cards.clone());
+    let mut top_rank = Rank::Three;
+    
+	for (rank, count) in &counts {
+		if *count == n {
+            top_rank = *rank;
+		}
+	}
+
+
+    let valid_cards:Vec<Card> = cards.iter()
+                .filter(|&c|{ c.rank == top_rank })
+                .map(|&c|{ c.clone() }).collect();
+
+    get_max_card(valid_cards)
+    
+
 }
 
 

@@ -592,3 +592,59 @@ pub fn only_top_card_counts_in_full_house(){
 
     assert_eq!(valid_move, true);
 }
+
+#[test]
+pub fn only_top_card_counts_in_four_of_a_kind(){
+    let unbeatable_four_of_kind = build_move(vec!(card!(Two, Spades),
+                                                card!(Two, Clubs),
+                                                card!(Two, Clubs),
+                                                card!(Two, Clubs),
+                                                card!(Three, Clubs))).unwrap();
+
+    let beatable_four_of_kind = build_move(vec!(card!(Two, Diamonds),
+                                                card!(Two, Diamonds),
+                                                card!(Two, Diamonds),
+                                                card!(Two, Diamonds),
+                                                card!(Ace, Spades))).unwrap();
+
+    let r = Round::new(vec!(0, 1),
+                        0,
+                        beatable_four_of_kind,
+                        0,
+                        false);
+
+    let valid_move = match r.play(0, unbeatable_four_of_kind){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert_eq!(valid_move, true);
+}
+
+#[test]
+pub fn only_top_card_counts_in_five_of_a_kind(){
+    let unbeatable_five_of_kind = build_move(vec!(card!(Two, Spades),
+                                                card!(Two, Clubs),
+                                                card!(Two, Clubs),
+                                                card!(Two, Clubs),
+                                                card!(Two, Clubs))).unwrap();
+
+    let beatable_five_of_kind = build_move(vec!(card!(Two, Diamonds),
+                                                card!(Two, Diamonds),
+                                                card!(Two, Diamonds),
+                                                card!(Two, Diamonds),
+                                                card!(Two, Diamonds))).unwrap();
+
+    let r = Round::new(vec!(0, 1),
+                        0,
+                        beatable_five_of_kind,
+                        0,
+                        false);
+
+    let valid_move = match r.play(0, unbeatable_five_of_kind){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert_eq!(valid_move, true);
+}
