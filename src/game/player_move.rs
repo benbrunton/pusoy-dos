@@ -67,8 +67,6 @@ impl PartialOrd for Trick {
     }
 }
 
-// todo - this is super simple - it should the full highest card
-// not just the rank into account
 fn compare_full_house(this:&Trick, other:&Trick) -> Option<Ordering> {
 
     let this_top_card = get_top_full_house_card(this.cards.to_vec());
@@ -76,15 +74,23 @@ fn compare_full_house(this:&Trick, other:&Trick) -> Option<Ordering> {
 	this_top_card.partial_cmp(&other_top_card)
 }
 
-fn get_top_full_house_card(cards:Vec<Card>) -> Rank {
-	let counts = get_counts(cards);
+fn get_top_full_house_card(cards:Vec<Card>) -> Card {
+	let counts = get_counts(cards.clone());
+    let mut top_rank = Rank::Three;
+    
 	for (rank, count) in &counts {
 		if *count == 3 {
-            return rank.to_owned();
-		}	
+            top_rank = *rank;
+		}
 	}
+
+
+    let valid_cards:Vec<Card> = cards.iter()
+                .filter(|&c|{ c.rank == top_rank })
+                .map(|&c|{ c.clone() }).collect();
+
+    get_max_card(valid_cards)
     
-    panic!("it's fucked");	
 }
 
 fn compare_flush(this:&Trick, other:&Trick) -> Option<Ordering> {

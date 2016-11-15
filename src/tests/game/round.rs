@@ -564,3 +564,31 @@ pub fn ten_club_high_flush_beats_nine_spade_high(){
 
     assert_eq!(valid_move, true);
 }
+
+#[test]
+pub fn only_top_card_counts_in_full_house(){
+    let unbeatable_full_house = build_move(vec!(card!(Two, Spades),
+                                                card!(Two, Clubs),
+                                                card!(Two, Clubs),
+                                                card!(Three, Clubs),
+                                                card!(Three, Clubs))).unwrap();
+
+    let beatable_full_house = build_move(vec!(card!(Two, Diamonds),
+                                                card!(Two, Diamonds),
+                                                card!(Two, Diamonds),
+                                                card!(Ace, Spades),
+                                                card!(Ace, Spades))).unwrap();
+
+    let r = Round::new(vec!(0, 1),
+                        0,
+                        beatable_full_house,
+                        0,
+                        false);
+
+    let valid_move = match r.play(0, unbeatable_full_house){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert_eq!(valid_move, true);
+}
