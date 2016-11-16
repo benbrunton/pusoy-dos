@@ -12,15 +12,15 @@ pub struct GameDefinition{
     pub players: Vec<Player>,
     /// round
     pub round: Round,
-    /// winner of round
-    pub winner: Option<u64>
+    /// order of winners
+    pub winners: Vec<u64>
 }
 
 /// The Game module
 pub struct Game { 
     players: Vec<Player>,
     round: Round,
-    winner: Option<u64>
+    winners: Vec<u64>
 }
 
 impl Game{
@@ -50,7 +50,7 @@ impl Game{
             GameDefinition{
                 players: players,
                 round: Game::get_empty_round(player_ids.clone(), next_player),
-                winner: None
+                winners: vec!()
             }
         )
     }
@@ -62,7 +62,7 @@ impl Game{
             Game{
                 players: game_definition.players,
                 round: game_definition.round, 
-                winner: None
+                winners: game_definition.winners
             }
         )
     }
@@ -104,12 +104,12 @@ impl Game{
        };
 
 
-       let winner = self.get_winner(&current_player);
+       let winners = self.get_winners(&current_player);
 
        Ok(GameDefinition{
           players: players.clone(),
           round: round,
-          winner: winner
+          winners: winners
        })
        
     }
@@ -146,12 +146,12 @@ impl Game{
         Round::new(player_ids, next, Move::Pass, 0, true)
     }
 
-    fn get_winner(&self, current_player: &Player) -> Option<u64> {
+    fn get_winners(&self, current_player: &Player) -> Vec<u64> {
+        let mut winners = self.winners.clone();
         if current_player.get_hand().len() == 0 {
-            Some(current_player.get_id())
-       }else{
-            self.winner
+            winners.push(current_player.get_id());
        }
+       winners
     }
 
     fn get_current_player(&self, player_id:u64) -> Option<Player> {
