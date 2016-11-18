@@ -86,11 +86,10 @@ impl Game{
        let mut current_player = current_player.unwrap();
 
         // only allow cards in player hand
-       for card in &cards {
-           if !current_player.get_hand().contains(&card){
-                return Err("Cannot play cards you do not have");
-           }
-       }
+        if !self.player_has_card(&current_player, cards.clone()) {
+            return Err("Cannot play cards you do not have");
+       
+        }
 
        let mut players = self.players.clone();
        let round = match self.round.play(player_id, p_move.unwrap()){
@@ -185,5 +184,23 @@ impl Game{
         players.iter()
             .filter(|player|{ player.get_hand().len() > 0 })
             .map(|player|{ player.get_id() }).collect()
+    }
+    
+    fn player_has_card(&self, player:&Player, cards:Vec<PlayerCard>) -> bool { 
+        for card in &cards {
+            match *card {
+                PlayerCard::Card(_) => {
+                    if !player.get_hand().contains(&card){
+                        return false;
+                    }
+                },
+                PlayerCard::Wildcard(_) => {
+
+                },
+                PlayerCard::Joker => { panic!("Joker is not a valid move - do you mean Wildcard?"); }
+            }
+        }
+
+        true
     }
 }

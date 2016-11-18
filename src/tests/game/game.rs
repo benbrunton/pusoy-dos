@@ -122,6 +122,33 @@ pub fn player_can_only_play_cards_in_its_hand(){
 }
 
 #[test]
+pub fn jokers_are_used_as_wildcards(){
+    let player1 = Player::new(0).set_hand(vec!(
+            card!(Four, Hearts), card!(Five, Clubs), PlayerCard::Joker));
+    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
+    
+    let single_three = build_move(vec!(card!(Three, Clubs))).unwrap();
+
+    let round = Round::new(vec!(0, 1), 0, single_three, 0, false); 
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winners: vec!()
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let valid_move = match game.player_move(0, vec!(wildcard!(Four, Diamonds))){
+        Ok(_)  => true,
+        _       => false
+    };
+
+    assert!(valid_move);
+
+}
+
+#[test]
 pub fn player_loses_cards_when_move_is_valid(){
     let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs), card!(Three, Hearts)));
     let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));

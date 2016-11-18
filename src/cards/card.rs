@@ -7,6 +7,12 @@ macro_rules! card {
     ($rank:ident, $suit:ident) => (PlayerCard::Card(Card::new(Rank::$rank, Suit::$suit)));
 }
 
+#[macro_export]
+macro_rules! wildcard {
+    ($rank:ident, $suit:ident) => (PlayerCard::Wildcard(Card::new(Rank::$rank, Suit::$suit)));
+}
+
+
 
 #[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable, Eq, Ord)]
 /// A Wrapper type that holds Real Cards and Jokers

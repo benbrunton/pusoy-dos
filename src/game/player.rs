@@ -1,4 +1,4 @@
-use cards::card::{PlayerCard, Card};
+use cards::card::PlayerCard;
 
 /// A player
 #[derive(Clone, Debug, PartialEq, RustcDecodable, RustcEncodable)]

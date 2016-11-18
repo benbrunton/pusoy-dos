@@ -1,6 +1,4 @@
 use cards::deck::*;
-use cards::card::Card;
-use cards::types::*;
 
 #[test]
 pub fn it_gets_a_full_deck_including_jokers(){
@@ -30,11 +28,3 @@ pub fn decks_can_be_dealt(){
     assert_eq!(dealt.len(), 4);
     assert_eq!(dealt[0].len(), 14);
 }
-/*
-#[test]
-pub fn deck_contains_2_jokers(){
-   let deck = Deck::new();
-   
-   for card in  
-}
-*/
