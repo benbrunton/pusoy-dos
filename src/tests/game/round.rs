@@ -1,6 +1,6 @@
 use game::round::{Round, RoundDefinition};
 use game::player_move::{ Move, build_move };
-use cards::card::Card;
+use cards::card::{ PlayerCard, Card };
 use cards::types::*;
 
 #[test]
@@ -61,7 +61,7 @@ pub fn a_valid_first_move_rotates_the_players(){
 
     let r = Round::new(vec!(5, 4), 5, Move::Pass, 0, true);
 
-    let new_round = match r.play(5, Move::Single(card!(Three, Clubs))) {
+    let new_round = match r.play(5, Move::Single(card!(Three, Clubs).to_card())) {
         Ok(r) => r,
         Err(r) => r
     };
@@ -251,12 +251,12 @@ pub fn when_every_player_passes_the_last_player_to_move_starts_the_round(){
 #[test]
 pub fn flush_beats_a_straight(){
 
-    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
-    let four_of_spades = Card::new(Rank::Four, Suit::Spades);
-    let five_of_clubs = Card::new(Rank::Five, Suit::Clubs);
-    let six_of_clubs = Card::new(Rank::Six, Suit::Clubs);
-    let seven_of_clubs = Card::new(Rank::Seven, Suit::Clubs);
-    let nine_of_clubs = Card::new(Rank::Nine, Suit::Clubs);
+    let three_of_clubs = card!(Three, Clubs);
+    let four_of_spades = card!(Four, Spades);
+    let five_of_clubs = card!(Five, Clubs);
+    let six_of_clubs = card!(Six, Clubs);
+    let seven_of_clubs = card!(Seven, Clubs);
+    let nine_of_clubs = card!(Nine, Clubs);
 
     let straight = build_move(vec!(three_of_clubs,
                         four_of_spades,
@@ -283,15 +283,15 @@ pub fn flush_beats_a_straight(){
 
 #[test]
 pub fn full_house_beats_a_flush(){
-    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
-    let three_of_hearts = Card::new(Rank::Three, Suit::Hearts);
-    let three_of_diamonds = Card::new(Rank::Three, Suit::Diamonds);
-    let four_of_clubs = Card::new(Rank::Four, Suit::Clubs);
-    let four_of_hearts = Card::new(Rank::Four, Suit::Hearts);
+    let three_of_clubs = card!(Three, Clubs);
+    let three_of_hearts = card!(Three, Hearts);
+    let three_of_diamonds = card!(Three, Diamonds);
+    let four_of_clubs = card!(Four, Clubs);
+    let four_of_hearts = card!(Four, Hearts);
 
-    let five_of_clubs = Card::new(Rank::Five, Suit::Clubs);
-    let six_of_clubs = Card::new(Rank::Six, Suit::Clubs);
-    let eight_of_clubs = Card::new(Rank::Eight, Suit::Clubs);
+    let five_of_clubs = card!(Five, Clubs);
+    let six_of_clubs = card!(Six, Clubs);
+    let eight_of_clubs = card!(Eight, Clubs);
 
     let full_house = build_move(vec!(three_of_clubs,
                                 three_of_hearts,

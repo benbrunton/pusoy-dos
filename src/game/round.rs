@@ -1,5 +1,5 @@
 use game::player_move::Move;
-use cards::card::Card;
+use cards::card::{ Card, PlayerCard };
 use cards::types::{Rank, Suit};
 
 /// definition
@@ -192,7 +192,7 @@ impl Round {
         };
 
         for card in cards.iter() {
-            if *card == card!(Three, Clubs){
+            if *card == card!(Three, Clubs).to_card(){
                 return true;
             }
         }

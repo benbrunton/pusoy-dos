@@ -1,4 +1,4 @@
-use cards::card::Card;
+use cards::card::{ Card, PlayerCard };
 use cards::types::*;
 use std::collections::HashMap;
 
@@ -113,7 +113,9 @@ fn get_top_of_n(cards: Vec<Card>, n:usize) -> Card{
 
 
 /// builds a move from a Vec of cards
-pub fn build_move(cards: Vec<Card>) -> Option<Move> {
+pub fn build_move(player_cards: Vec<PlayerCard>) -> Option<Move> {
+
+    let cards:Vec<Card> = player_cards.iter().map(| ref card | { card.to_card() }).collect();
 
     match cards.len() {
         0 => Some(Move::Pass),

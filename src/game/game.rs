@@ -2,7 +2,7 @@ use game::round::Round;
 use game::player::Player;
 use cards::deck::Deck;
 use cards::types::{Rank, Suit};
-use cards::card::Card;
+use cards::card::{PlayerCard, Card};
 use game::player_move::{Move, build_move};
 
 /// A definition of a game in progress
@@ -68,7 +68,7 @@ impl Game{
     }
 
     /// takes a player_id and a vec of cards for a move
-    pub fn player_move(&self, player_id:u64, cards:Vec<Card>) -> Result<GameDefinition, &'static str> {
+    pub fn player_move(&self, player_id:u64, cards:Vec<PlayerCard>) -> Result<GameDefinition, &'static str> {
        let p_move = build_move(cards.clone());
 
         // only allow valid hands

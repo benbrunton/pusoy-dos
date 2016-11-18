@@ -4,7 +4,26 @@ use cards::types::*;
 
 #[macro_export]
 macro_rules! card {
-    ($rank:ident, $suit:ident) => (Card::new(Rank::$rank, Suit::$suit));
+    ($rank:ident, $suit:ident) => (PlayerCard::Card(Card::new(Rank::$rank, Suit::$suit)));
+}
+
+
+#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable, Eq, Ord)]
+/// A Wrapper type that holds Real Cards and Jokers
+pub enum PlayerCard {
+   Card(Card),
+   Wildcard(Card),
+   Joker
+}
+
+impl PlayerCard {
+    
+    pub fn to_card(&self) -> Card {
+        match *self {
+            PlayerCard::Card(c)|PlayerCard::Wildcard(c) => c,
+            PlayerCard::Joker => panic!("Joker must be specified as Wildcard(Card)!")
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable, Eq, Ord)]

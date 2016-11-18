@@ -1,5 +1,5 @@
 use cards::types::*;
-use cards::card::Card;
+use cards::card::{PlayerCard, Card};
 use game::player::Player;
 
 #[test]

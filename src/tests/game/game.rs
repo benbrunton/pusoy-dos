@@ -8,6 +8,7 @@ use cards::card::*;
 use cards::types::*;
 use game::player::Player;
 use game::round::Round;
+use game::player_move::build_move;
 
 #[test]
 pub fn game_can_deal_cards_to_each_player_on_setup(){
@@ -17,8 +18,8 @@ pub fn game_can_deal_cards_to_each_player_on_setup(){
     let player1_cards = new_game_definition.players[0].get_hand();
     let player2_cards = new_game_definition.players[1].get_hand();
 
-    assert_eq!(player1_cards.len(), 26);
-    assert_eq!(player2_cards.len(), 26);
+    assert_eq!(player1_cards.len(), 27);
+    assert_eq!(player2_cards.len(), 27);
 
 }
 
@@ -75,7 +76,9 @@ pub fn valid_moves_return_new_game_definition(){
     let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs)));
     let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
 
-    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Three, Clubs)), 0, false);
+    let single_three = build_move(vec!(card!(Three, Clubs))).unwrap();
+
+    let round = Round::new(vec!(0, 1), 0, single_three, 0, false);
     
     let game_def = GameDefinition{
         players: vec!(player1, player2),
@@ -96,8 +99,10 @@ pub fn valid_moves_return_new_game_definition(){
 pub fn player_can_only_play_cards_in_its_hand(){
     let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs)));
     let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
+    
+    let single_three = build_move(vec!(card!(Three, Clubs))).unwrap();
 
-    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Three, Clubs)), 0, false); 
+    let round = Round::new(vec!(0, 1), 0, single_three, 0, false); 
 
     let game_def = GameDefinition{
         players: vec!(player1, player2),
@@ -121,7 +126,8 @@ pub fn player_loses_cards_when_move_is_valid(){
     let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs), card!(Three, Hearts)));
     let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
 
-    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Three, Clubs)), 0, false); 
+    let single_three = build_move(vec!(card!(Three, Clubs))).unwrap();
+    let round = Round::new(vec!(0, 1), 0, single_three, 0, false); 
 
     let game_def = GameDefinition{
         players: vec!(player1, player2),
@@ -142,7 +148,9 @@ pub fn player_keeps_cards_when_move_is_invalid(){
     let player1 = Player::new(0).set_hand(vec!(card!(Four, Diamonds), card!(Six, Hearts)));
     let player2 = Player::new(1).set_hand(vec!(card!(Five, Clubs)));
 
-    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Queen, Spades)), 0, false);
+    let single_queen = build_move(vec!(card!(Queen, Spades))).unwrap();
+
+    let round = Round::new(vec!(0, 1), 0, single_queen, 0, false);
 
     let game_def = GameDefinition{
         players: vec!(player1, player2),
@@ -162,7 +170,8 @@ pub fn player_using_last_card_wins(){
     let player1 = Player::new(0).set_hand(vec!(card!(Two, Hearts)));
     let player2 = Player::new(1).set_hand(vec!(card!(Queen, Diamonds)));
 
-    let round = Round::new(vec!(0, 1), 0, Move::Single(card!(Ten, Clubs)), 0, false);
+    let single_ten = build_move(vec!(card!(Ten, Clubs))).unwrap();
+    let round = Round::new(vec!(0, 1), 0, single_ten, 0, false);
 
     let game_def = GameDefinition{
         players: vec!(player1, player2),
@@ -185,7 +194,9 @@ pub fn players_are_added_to_the_winners_vec_as_they_run_out_of_cards(){
     let player3 = Player::new(2).set_hand(vec!(card!(Two, Clubs)));
     let player4 = Player::new(3).set_hand(vec!(card!(Seven, Spades)));
 
-    let round = Round::new(vec!(1, 2, 3), 2, Move::Single(card!(Ten, Clubs)), 0, false);
+    let single_ten = build_move(vec!(card!(Ten, Clubs))).unwrap();
+
+    let round = Round::new(vec!(1, 2, 3), 2, single_ten, 0, false);
 
     let game_def = GameDefinition{
         players: vec!(player1, player2, player3, player4),
@@ -211,7 +222,8 @@ pub fn winner_is_removed_from_play_rotation(){
     let player2 = Player::new(1).set_hand(vec!(card!(Queen, Diamonds)));
     let player3 = Player::new(2).set_hand(vec!(card!(Two, Clubs)));
 
-    let round = Round::new(vec!(0, 1, 2), 0, Move::Single(card!(Ten, Clubs)), 0, false);
+    let single_ten = build_move(vec!(card!(Ten, Clubs))).unwrap();
+    let round = Round::new(vec!(0, 1, 2), 0, single_ten, 0, false);
 
     let game_def = GameDefinition{
         players: vec!(player1, player2, player3),
@@ -240,7 +252,9 @@ pub fn subsequent_finishing_players_are_removed(){
     let player3 = Player::new(2).set_hand(vec!(card!(Two, Clubs)));
     let player4 = Player::new(3).set_hand(vec!(card!(Seven, Spades)));
 
-    let round = Round::new(vec!(1, 2, 3), 2, Move::Single(card!(Ten, Clubs)), 0, false);
+    let single_ten = build_move(vec!(card!(Ten, Clubs))).unwrap();
+
+    let round = Round::new(vec!(1, 2, 3), 2, single_ten, 0, false);
 
     let game_def = GameDefinition{
         players: vec!(player1, player2, player3, player4),
@@ -259,6 +273,32 @@ pub fn subsequent_finishing_players_are_removed(){
     let game = Game::load(new_game_def).unwrap();
 
     assert_eq!(game.get_next_player().unwrap().get_id(), 3);
+
+
+}
+
+#[test]
+pub fn player_removal_is_reflected_in_the_stored_round(){
+    let player1 = Player::new(0).set_hand(vec!());
+    let player2 = Player::new(1).set_hand(vec!(card!(Queen, Diamonds)));
+    let player3 = Player::new(2).set_hand(vec!(card!(Two, Clubs)));
+    let player4 = Player::new(3).set_hand(vec!(card!(Seven, Spades)));
+
+    let single_ten = build_move(vec!(card!(Ten, Clubs))).unwrap();
+
+    let round = Round::new(vec!(1, 2, 3), 2, single_ten, 0, false);
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2, player3, player4),
+        round: round,
+        winners: vec!()
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game_def = game.player_move(2, vec!(card!(Two, Clubs))).unwrap();
+
+    assert_eq!(new_game_def.round.export().players, vec!(1, 3));
 
 
 }

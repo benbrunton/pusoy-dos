@@ -1,9 +1,9 @@
-use cards::card::Card;
+use cards::card::{PlayerCard, Card};
 
 /// A player
 #[derive(Clone, Debug, PartialEq, RustcDecodable, RustcEncodable)]
 pub struct Player{
-    hand: Vec<Card>,
+    hand: Vec<PlayerCard>,
     id: u64
 }
 
@@ -24,7 +24,7 @@ impl Player{
     }
 
     /// give a player their hand
-    pub fn set_hand(&self, hand:Vec<Card>) -> Player {
+    pub fn set_hand(&self, hand:Vec<PlayerCard>) -> Player {
         Player{
             hand: hand.clone(),
             id: self.id
@@ -37,12 +37,12 @@ impl Player{
     }
 
     /// get the cards for a player
-    pub fn get_hand(&self) -> Vec<Card> {
+    pub fn get_hand(&self) -> Vec<PlayerCard> {
         self.hand.clone()
     }
 
     /// take some cards from a player
-    pub fn remove(&self, cards:&Vec<Card>) -> Player {
+    pub fn remove(&self, cards:&Vec<PlayerCard>) -> Player {
         let new_hand = self.hand.iter().filter(|&card| {
            !cards.contains(card) 
         }).map(|&card|{

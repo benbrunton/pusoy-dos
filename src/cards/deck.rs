@@ -2,23 +2,26 @@ use rand;
 use rand::Rng;
 
 use cards::types::*;
-use cards::card::Card;
+use cards::card::{Card, PlayerCard};
 
 /// a fresh deck of cards
 #[derive(Clone, Debug)]
-pub struct Deck(Vec<Card>);
+pub struct Deck(Vec<PlayerCard>);
 
 impl Deck {
     /// create a new deck
     pub fn new() -> Deck {
-        let mut cards:Vec<Card> = Vec::with_capacity(52);
+        let mut cards:Vec<PlayerCard> = Vec::with_capacity(52);
         for suit in &[Suit::Spades, Suit::Hearts, Suit::Diamonds, Suit::Clubs] {
             for rank in &[Rank::Ace, Rank::Two, Rank::Three, Rank::Four, 
                 Rank::Five, Rank::Six, Rank::Seven, Rank::Eight, Rank::Nine, 
                 Rank::Ten, Rank::Jack, Rank::Queen, Rank::King] {
-                cards.push( Card::new(rank.clone(), suit.clone()) );
+                let c = Card::new(rank.clone(), suit.clone());
+                cards.push( PlayerCard::Card(c) );
             }
         }
+        cards.push(PlayerCard::Joker);
+        cards.push(PlayerCard::Joker);
         Deck(cards)
     }
 
@@ -35,7 +38,7 @@ impl Deck {
     }
 
     /// deal to a number of players
-    pub fn deal(&self, players: usize) -> Vec<Vec<Card>> {
+    pub fn deal(&self, players: usize) -> Vec<Vec<PlayerCard>> {
         let mut dealt_stacks = vec!();
         
         while dealt_stacks.len() < players {
