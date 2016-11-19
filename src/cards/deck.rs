@@ -21,7 +21,7 @@ impl Deck {
             }
         }
         cards.push(PlayerCard::Joker(0));
-        cards.push(PlayerCard::Joker(0));
+        cards.push(PlayerCard::Joker(1));
         Deck(cards)
     }
 
