@@ -20,8 +20,8 @@ impl Deck {
                 cards.push( PlayerCard::Card(c) );
             }
         }
-        cards.push(PlayerCard::Joker);
-        cards.push(PlayerCard::Joker);
+        cards.push(PlayerCard::Joker(0));
+        cards.push(PlayerCard::Joker(0));
         Deck(cards)
     }
 

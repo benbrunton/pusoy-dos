@@ -124,7 +124,7 @@ pub fn player_can_only_play_cards_in_its_hand(){
 #[test]
 pub fn jokers_are_used_as_wildcards(){
     let player1 = Player::new(0).set_hand(vec!(
-            card!(Four, Hearts), card!(Five, Clubs), PlayerCard::Joker));
+            card!(Four, Hearts), card!(Five, Clubs), PlayerCard::Joker(0)));
     let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
     
     let single_three = build_move(vec!(card!(Three, Clubs))).unwrap();

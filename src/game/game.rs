@@ -197,7 +197,7 @@ impl Game{
                 PlayerCard::Wildcard(_) => {
 
                 },
-                PlayerCard::Joker => { panic!("Joker is not a valid move - do you mean Wildcard?"); }
+                PlayerCard::Joker(_) => { panic!("Joker is not a valid move - do you mean Wildcard?"); }
             }
         }
 

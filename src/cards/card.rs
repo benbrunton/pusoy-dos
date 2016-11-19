@@ -19,7 +19,7 @@ macro_rules! wildcard {
 pub enum PlayerCard {
    Card(Card),
    Wildcard(Card),
-   Joker
+   Joker(u64)
 }
 
 impl PlayerCard {
@@ -27,7 +27,7 @@ impl PlayerCard {
     pub fn to_card(&self) -> Card {
         match *self {
             PlayerCard::Card(c)|PlayerCard::Wildcard(c) => c,
-            PlayerCard::Joker => panic!("Joker must be specified as Wildcard(Card)!")
+            PlayerCard::Joker(_) => panic!("Joker must be specified as Wildcard(Card)!")
         }
     }
 }
