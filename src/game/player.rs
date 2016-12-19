@@ -43,7 +43,10 @@ impl Player{
 
     /// take some cards from a player
     pub fn remove(&self, cards:&Vec<PlayerCard>) -> Player {
-        let new_hand = self.hand.iter().filter(|&card| {
+
+        let hand = self.remove_jokers(cards);
+
+        let new_hand = hand.iter().filter(|&card| {
            !cards.contains(card) 
         }).map(|&card|{
             card.clone()  
@@ -53,6 +56,34 @@ impl Player{
             id: self.id,
             hand: new_hand
         }
+    }
+
+    pub fn remove_jokers(&self, cards:&Vec<PlayerCard>)-> Vec<PlayerCard> {
+        let mut new_hand = vec!();
+        let mut jokers = 0;
+
+        for card in cards.iter() {
+            match *card {
+                PlayerCard::Wildcard(_) => jokers += 1,
+                _ => ()
+            }
+        }
+
+        for card in self.hand.iter() {
+            match *card {
+                PlayerCard::Joker(n) => {
+                    if jokers < 1 { 
+                        new_hand.push(PlayerCard::Joker(n));
+                    }else {
+                        jokers -= 1;
+                    }
+                },
+                c => new_hand.push(c.to_owned())
+            }
+        }
+
+        new_hand
+
     }
 
 }
