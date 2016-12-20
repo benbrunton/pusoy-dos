@@ -3,7 +3,7 @@ use cards::card::{ PlayerCard, Card };
 
 #[test]
 pub fn card_macro_makes_it_easy_to_declare_card(){
-    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades);
+    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades, false);
 
     assert_eq!(card!(Ace, Spades).to_card(), ace_of_spades);
 }
@@ -11,19 +11,19 @@ pub fn card_macro_makes_it_easy_to_declare_card(){
 
 #[test]
 pub fn rank_order_is_correct() {
-    let three = Card::new(Rank::Three, Suit::Spades);
-    let four = Card::new(Rank::Four, Suit::Spades);
-    let five = Card::new(Rank::Five, Suit::Spades);
-    let six = Card::new(Rank::Six, Suit::Spades);
-    let seven = Card::new(Rank::Seven, Suit::Spades);
-    let eight = Card::new(Rank::Eight, Suit::Spades);
-    let nine = Card::new(Rank::Nine, Suit::Spades);
-    let ten = Card::new(Rank::Ten, Suit::Spades);
-    let jack = Card::new(Rank::Jack, Suit::Spades);
-    let queen = Card::new(Rank::Queen, Suit::Spades);
-    let king = Card::new(Rank::King, Suit::Spades);
-    let ace = Card::new(Rank::Ace, Suit::Spades);
-    let two = Card::new(Rank::Two, Suit::Spades);
+    let three = Card::new(Rank::Three, Suit::Spades, false);
+    let four = Card::new(Rank::Four, Suit::Spades, false);
+    let five = Card::new(Rank::Five, Suit::Spades, false);
+    let six = Card::new(Rank::Six, Suit::Spades, false);
+    let seven = Card::new(Rank::Seven, Suit::Spades, false);
+    let eight = Card::new(Rank::Eight, Suit::Spades, false);
+    let nine = Card::new(Rank::Nine, Suit::Spades, false);
+    let ten = Card::new(Rank::Ten, Suit::Spades, false);
+    let jack = Card::new(Rank::Jack, Suit::Spades, false);
+    let queen = Card::new(Rank::Queen, Suit::Spades, false);
+    let king = Card::new(Rank::King, Suit::Spades, false);
+    let ace = Card::new(Rank::Ace, Suit::Spades, false);
+    let two = Card::new(Rank::Two, Suit::Spades, false);
 
     assert_eq!(three.previous_rank(), None);
     assert_eq!(three.next_rank(), Some(Rank::Four));

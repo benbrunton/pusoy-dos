@@ -1,15 +1,18 @@
 use std::fmt;
+use std::cmp::Ordering;
 
 use cards::types::*;
 
 #[macro_export]
 macro_rules! card {
-    ($rank:ident, $suit:ident) => (PlayerCard::Card(Card::new(Rank::$rank, Suit::$suit)));
+    ($rank:ident, $suit:ident) => (PlayerCard::Card(Card::new(Rank::$rank, Suit::$suit, false)));
+    ($rank:ident, $suit:ident, $reverse:expr) => (PlayerCard::Card(Card::new(Rank::$rank, Suit::$suit, $reverse)));
 }
 
 #[macro_export]
 macro_rules! wildcard {
-    ($rank:ident, $suit:ident) => (PlayerCard::Wildcard(Card::new(Rank::$rank, Suit::$suit)));
+    ($rank:ident, $suit:ident) => (PlayerCard::Wildcard(Card::new(Rank::$rank, Suit::$suit, false)));
+    ($rank:ident, $suit:ident, $reverse:expr) => (PlayerCard::Wildcard(Card::new(Rank::$rank, Suit::$suit, $reverse)));
 }
 
 
@@ -32,7 +35,7 @@ impl PlayerCard {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable, Eq, Ord)]
+#[derive(Clone, Debug, PartialEq, Copy, RustcDecodable, RustcEncodable, Eq, Ord)]
 /// An individual card
 pub struct Card{
     /// The `Rank` of the card
@@ -41,18 +44,19 @@ pub struct Card{
     pub suit: Suit,
     /// This is linked to the `Suit` but
     /// is also explicitly stored here
-    pub colour: Colour
+    pub colour: Colour,
+    reversed: bool
 }
 
 impl Card {
 
     /// returns a new `Card`
-    pub fn new(rank: Rank, suit: Suit) -> Card {
+    pub fn new(rank: Rank, suit: Suit, reversed: bool) -> Card {
         let colour = match suit {
             Suit::Diamonds | Suit::Hearts   => Colour::Red,
             _                               => Colour::Black
         };
-        Card{suit: suit, rank: rank, colour: colour}
+        Card{suit: suit, rank: rank, colour: colour, reversed: reversed}
     }
 
     /// returns previous `Rank` of card or `None`
@@ -71,6 +75,24 @@ impl Card {
             Colour::Black
         } else {
             Colour::Red
+        }
+    }
+}
+
+impl PartialOrd for Card {
+
+    fn partial_cmp(&self, other: &Card) -> Option<Ordering> {
+
+        if self.reversed {
+            match other.rank.partial_cmp(&self.rank) {
+                Some(Ordering::Equal) => other.suit.partial_cmp(&self.suit),
+                x                     => x
+            }
+        } else {
+            match self.rank.partial_cmp(&other.rank) {
+                Some(Ordering::Equal) => self.suit.partial_cmp(&other.suit),
+                x                     => x
+            }
         }
     }
 }

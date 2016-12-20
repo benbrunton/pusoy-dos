@@ -16,7 +16,7 @@ impl Deck {
             for rank in &[Rank::Ace, Rank::Two, Rank::Three, Rank::Four, 
                 Rank::Five, Rank::Six, Rank::Seven, Rank::Eight, Rank::Nine, 
                 Rank::Ten, Rank::Jack, Rank::Queen, Rank::King] {
-                let c = Card::new(rank.clone(), suit.clone());
+                let c = Card::new(rank.clone(), suit.clone(), false);
                 cards.push( PlayerCard::Card(c) );
             }
         }

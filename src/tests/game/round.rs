@@ -28,12 +28,12 @@ pub fn it_returns_a_new_round_when_passed_a_valid_move(){
 pub fn it_returns_an_error_when_a_move_is_invalid(){
 
     let mv = Move::Pair(
-        Card::new(Rank::Ace, Suit::Spades),
-        Card::new(Rank::Ace, Suit::Hearts)
+        Card::new(Rank::Ace, Suit::Spades, false),
+        Card::new(Rank::Ace, Suit::Hearts, false)
     );
 
     let new_move = Move::Single(
-        Card::new(Rank::Three, Suit::Clubs)
+        Card::new(Rank::Three, Suit::Clubs, false)
     );
     let r = Round::new(vec!(1, 2, 3), 1, mv, 0, false);
 
@@ -119,8 +119,8 @@ pub fn any_hand_can_be_passed_onto_an_emtpy_round(){
 
     let r = Round::new(vec!(1, 2), 1, Move::Pass, 0, false);
 
-    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades);
-    let ace_of_diamonds = Card::new(Rank::Ace, Suit::Diamonds);
+    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades, false);
+    let ace_of_diamonds = Card::new(Rank::Ace, Suit::Diamonds, false);
 
     let valid_move = match r.play(1, Move::Single(ace_of_spades)) {
         Ok(_)   => true,
@@ -142,8 +142,8 @@ pub fn any_hand_can_be_passed_onto_an_emtpy_round(){
 #[test]
 pub fn single_can_be_beaten_by_a_higher_single(){
 
-    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
-    let four_of_diamonds = Card::new(Rank::Four, Suit::Diamonds);
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs, false);
+    let four_of_diamonds = Card::new(Rank::Four, Suit::Diamonds, false);
 
     let r = Round::new(vec!(1, 2), 1, Move::Single(three_of_clubs), 0, false);
 
@@ -158,8 +158,8 @@ pub fn single_can_be_beaten_by_a_higher_single(){
 #[test]
 pub fn single_cannot_be_beaten_by_a_higher_single(){
 
-    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
-    let four_of_diamonds = Card::new(Rank::Four, Suit::Diamonds);
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs, false);
+    let four_of_diamonds = Card::new(Rank::Four, Suit::Diamonds, false);
 
     let r = Round::new(vec!(1, 2), 1, Move::Single(four_of_diamonds), 0, false);
 
@@ -173,9 +173,9 @@ pub fn single_cannot_be_beaten_by_a_higher_single(){
 
 #[test]
 pub fn single_card_respects_suit_order() {
-    let tc = Card::new(Rank::Three, Suit::Clubs);
-    let th = Card::new(Rank::Three, Suit::Hearts);
-    let td = Card::new(Rank::Three, Suit::Diamonds);
+    let tc = Card::new(Rank::Three, Suit::Clubs, false);
+    let th = Card::new(Rank::Three, Suit::Hearts, false);
+    let td = Card::new(Rank::Three, Suit::Diamonds, false);
 
     let r = Round::new(vec!(1,2,3), 1, Move::Single(th), 0, false);
 
@@ -197,10 +197,10 @@ pub fn single_card_respects_suit_order() {
 #[test]
 pub fn single_cannot_be_beaten_by_non_single_move(){
 
-    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs);
+    let three_of_clubs = Card::new(Rank::Three, Suit::Clubs, false);
 
-    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades);
-    let ace_of_diamonds = Card::new(Rank::Ace, Suit::Diamonds);
+    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades, false);
+    let ace_of_diamonds = Card::new(Rank::Ace, Suit::Diamonds, false);
 
     let r = Round::new(vec!(1, 2), 1, Move::Single(three_of_clubs), 0, false);
 
@@ -217,8 +217,8 @@ pub fn when_every_player_passes_the_last_player_to_move_starts_the_round(){
 
     let r = Round::new(vec!(1, 2, 3), 1, Move::Pass, 0, false);
 
-    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades);
-    let two_of_hearts = Card::new(Rank::Two, Suit::Hearts);
+    let ace_of_spades = Card::new(Rank::Ace, Suit::Spades, false);
+    let two_of_hearts = Card::new(Rank::Two, Suit::Hearts, false);
 
     let next_round = match r.play(1, Move::Single(ace_of_spades)){
         Ok(r)  => r,
