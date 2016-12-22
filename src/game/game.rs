@@ -3,7 +3,7 @@ use game::player::Player;
 use cards::deck::Deck;
 use cards::types::{Rank, Suit};
 use cards::card::{PlayerCard, Card};
-use game::player_move::{Move, build_move};
+use game::player_move::{Move, TrickType, build_move};
 
 /// A definition of a game in progress
 #[derive(Clone, Debug)]
@@ -13,14 +13,16 @@ pub struct GameDefinition{
     /// round
     pub round: Round,
     /// order of winners
-    pub winners: Vec<u64>
+    pub winners: Vec<u64>,
+    pub reversed: bool
 }
 
 /// The Game module
 pub struct Game { 
     players: Vec<Player>,
     round: Round,
-    winners: Vec<u64>
+    winners: Vec<u64>,
+    reversed: bool
 }
 
 impl Game{
@@ -50,7 +52,8 @@ impl Game{
             GameDefinition{
                 players: players,
                 round: Game::get_empty_round(player_ids.clone(), next_player),
-                winners: vec!()
+                winners: vec!(),
+                reversed: false
             }
         )
     }
@@ -62,7 +65,8 @@ impl Game{
             Game{
                 players: game_definition.players,
                 round: game_definition.round, 
-                winners: game_definition.winners
+                winners: game_definition.winners,
+                reversed: game_definition.reversed
             }
         )
     }
@@ -92,7 +96,7 @@ impl Game{
         }
 
        let mut players = self.players.clone();
-       let round = match self.round.play(player_id, p_move.unwrap()){
+       let mut round = match self.round.play(player_id, p_move.unwrap()){
             Ok(r) => {
                 current_player = current_player.remove(&cards);
                 players = self.replace_current_player(&current_player);
@@ -101,6 +105,27 @@ impl Game{
             },
             Err(r) => r
        };
+       let mut reversed = self.reversed;
+
+
+       // check for Four of a kind / Five of a kind and reverse cards
+       // this means manually switching the cards in the players hands
+       // and the last played hand on the round
+        match p_move {
+            Some(Move::FiveCardTrick(t)) => match t.trick_type {
+               TrickType::FourOfAKind
+               | TrickType::FiveOfAKind => {
+                    // update round to reverse last_move cards
+                    round = round.reverse_last_move();
+                    // update players to reverse cards in hand    
+                    players = players.iter().map(|ref p|{ p.reverse_hand() }).collect::<Vec<Player>>(); 
+                    reversed = !self.reversed;
+               },
+               _ => ()
+            },
+            _ => ()
+            
+        }
 
 
        let winners = self.get_winners(&current_player);
@@ -108,7 +133,8 @@ impl Game{
        Ok(GameDefinition{
           players: players.clone(),
           round: round,
-          winners: winners
+          winners: winners,
+          reversed: reversed
        })
        
     }

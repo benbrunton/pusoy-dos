@@ -54,3 +54,8 @@ pub fn rank_order_is_correct() {
 }
 
 
+#[test]
+pub fn reversals_reverse_card_order() {
+    assert!(card!(Three, Clubs, true) > card!(Two, Spades, true));
+}
+

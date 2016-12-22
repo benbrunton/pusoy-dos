@@ -27,6 +27,18 @@ pub enum Move{
     FiveCardTrick(Trick)
 }
 
+impl Move {
+    pub fn reverse(&self) -> Move {
+       match *self {
+          Move::Pass => Move::Pass,
+          Move::Single(c) => Move::Single(c.reverse()),
+          Move::Pair(a, b) => Move::Pair(a.reverse(), b.reverse()),
+          Move::Prial(a, b, c) => Move::Prial(a.reverse(), b.reverse(), c.reverse()),
+          Move::FiveCardTrick(t) => Move::FiveCardTrick(t.reverse())
+       }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, PartialOrd, Eq, Ord, Copy, RustcDecodable, RustcEncodable)]
 /// Type of 5 card trick
 pub enum TrickType{
@@ -48,6 +60,23 @@ pub enum TrickType{
 pub struct Trick{
 	pub trick_type: TrickType,
 	pub cards: [Card;5]	
+}
+
+impl Trick {
+    pub fn reverse(&self) -> Trick {
+        let cards = [
+            self.cards[0].reverse(),
+            self.cards[1].reverse(),
+            self.cards[2].reverse(),
+            self.cards[3].reverse(),
+            self.cards[4].reverse()
+        ];
+
+        Trick {
+            trick_type: self.trick_type,
+            cards: cards
+        }
+    }
 }
 
 impl PartialOrd for Trick {

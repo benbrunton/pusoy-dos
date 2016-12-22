@@ -32,7 +32,8 @@ pub fn game_can_load_in_any_state(){
     let game_definition = GameDefinition{
         players: vec!(player1, player2),
         round:Round::new(vec!(0, 1), 0, Move::Pass, 0, false),
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let existing_game = Game::load(game_definition).unwrap();
@@ -83,7 +84,8 @@ pub fn valid_moves_return_new_game_definition(){
     let game_def = GameDefinition{
         players: vec!(player1, player2),
         round:round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -107,7 +109,8 @@ pub fn player_can_only_play_cards_in_its_hand(){
     let game_def = GameDefinition{
         players: vec!(player1, player2),
         round: round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -134,7 +137,8 @@ pub fn jokers_are_used_as_wildcards(){
     let game_def = GameDefinition{
         players: vec!(player1, player2),
         round: round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -159,7 +163,8 @@ pub fn player_loses_cards_when_move_is_valid(){
     let game_def = GameDefinition{
         players: vec!(player1, player2),
         round: round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -183,7 +188,8 @@ pub fn player_loses_joker_when_playing_wildcard(){
     let game_def = GameDefinition{
         players: vec!(player1, player2),
         round: round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -207,7 +213,8 @@ pub fn player_keeps_cards_when_move_is_invalid(){
     let game_def = GameDefinition{
         players: vec!(player1, player2),
         round: round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -228,7 +235,8 @@ pub fn player_using_last_card_wins(){
     let game_def = GameDefinition{
         players: vec!(player1, player2),
         round: round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -253,7 +261,8 @@ pub fn players_are_added_to_the_winners_vec_as_they_run_out_of_cards(){
     let game_def = GameDefinition{
         players: vec!(player1, player2, player3, player4),
         round: round,
-        winners: vec!(0)
+        winners: vec!(0),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -280,7 +289,8 @@ pub fn winner_is_removed_from_play_rotation(){
     let game_def = GameDefinition{
         players: vec!(player1, player2, player3),
         round: round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -311,7 +321,8 @@ pub fn subsequent_finishing_players_are_removed(){
     let game_def = GameDefinition{
         players: vec!(player1, player2, player3, player4),
         round: round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -343,7 +354,8 @@ pub fn player_removal_is_reflected_in_the_stored_round(){
     let game_def = GameDefinition{
         players: vec!(player1, player2, player3, player4),
         round: round,
-        winners: vec!()
+        winners: vec!(),
+        reversed: false
     };
 
     let game = Game::load(game_def).unwrap();
@@ -351,6 +363,51 @@ pub fn player_removal_is_reflected_in_the_stored_round(){
     let new_game_def = game.player_move(2, vec!(card!(Two, Clubs))).unwrap();
 
     assert_eq!(new_game_def.round.export().players, vec!(1, 3));
+
+
+}
+
+#[test]
+pub fn playing_a_four_card_trick_reverses_the_cards(){
+
+    let player1 = Player::new(1).set_hand(vec!(
+        card!(Queen, Diamonds), 
+        card!(Queen, Hearts), 
+        card!(Queen, Clubs), 
+        card!(Queen, Spades), 
+        card!(Four, Hearts), 
+        card!(Two, Spades), 
+        card!(Six, Diamonds)));
+    let player2 = Player::new(2).set_hand(vec!(card!(Two, Clubs)));
+
+    let round = Round::new(vec!(1, 2), 1, build_move(vec!()).unwrap(), 0, false);
+    
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winners: vec!(),
+        reversed: false
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game_def = game.player_move(1, vec!(card!(Queen, Diamonds),
+                                                card!(Queen, Hearts),
+                                                card!(Queen, Clubs),
+                                                card!(Four, Hearts),
+                                                card!(Queen, Spades))).unwrap();
+
+    let last_move = new_game_def.round.export().last_move;
+
+    let card = match last_move {
+        Move::FiveCardTrick(trick) => trick.cards[0],
+        _ => panic!("should be five card trick")
+    };
+
+    let player_card = new_game_def.players[0].get_hand()[0].to_card();
+
+    assert_eq!(card.reversed, true);
+    assert_eq!(player_card.reversed, true);
 
 
 }

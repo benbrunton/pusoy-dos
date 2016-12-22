@@ -129,6 +129,10 @@ impl Round {
             self.pass_count, 
             self.first_round)
     }
+
+    pub fn reverse_last_move(&self) -> Round {
+       Round::new(self.players.clone(), self.current_player, self.last_move.reverse(), self.pass_count, self.first_round) 
+    }
     
     fn determine_next_player(&self) -> u64 {
         if self.current_player == *self.players.last().unwrap() {

@@ -33,6 +33,14 @@ impl PlayerCard {
             PlayerCard::Joker(_) => panic!("Joker must be specified as Wildcard(Card)!")
         }
     }
+
+    pub fn reverse(&self) -> PlayerCard {
+        match *self {
+            PlayerCard::Card(c) => PlayerCard::Card(c.reverse()),
+            PlayerCard::Wildcard(c) => PlayerCard::Wildcard(c.reverse()),
+            c => c
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Copy, RustcDecodable, RustcEncodable, Eq, Ord)]
@@ -45,7 +53,7 @@ pub struct Card{
     /// This is linked to the `Suit` but
     /// is also explicitly stored here
     pub colour: Colour,
-    reversed: bool
+    pub reversed: bool
 }
 
 impl Card {
@@ -76,6 +84,10 @@ impl Card {
         } else {
             Colour::Red
         }
+    }
+
+    pub fn reverse(&self) -> Card{
+        Card::new(self.rank, self.suit, !self.reversed)
     }
 }
 

@@ -41,6 +41,14 @@ impl Player{
         self.hand.clone()
     }
 
+    pub fn reverse_hand(&self) -> Player {
+        let reversed_hand = self.hand.iter().map(|&c|{c.reverse()}).collect::<Vec<PlayerCard>>();
+        Player{
+            hand: reversed_hand,
+            id: self.id
+        }
+    }
+
     /// take some cards from a player
     pub fn remove(&self, cards:&Vec<PlayerCard>) -> Player {
 
