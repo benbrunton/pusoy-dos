@@ -412,3 +412,31 @@ pub fn playing_a_four_card_trick_reverses_the_cards(){
 
 }
 
+#[test]
+pub fn reversed_and_not_reversed_are_equal_in_terms_of_player_possession(){
+    // meaning if you check a player has a QH(reversed), but they only have a QH(not reversed) in hand
+    // then they are counted as having that card
+    let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
+    
+    let single_two = build_move(vec!(card!(Two, Clubs, true))).unwrap();
+
+    let round = Round::new(vec!(0, 1), 0, single_two, 0, false); 
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winners: vec!(),
+        reversed: true
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let valid_move = match game.player_move(0, vec!(card!(Four, Hearts))){
+        Ok(_)  => true,
+        _       => false
+    };
+
+    assert!(valid_move);
+
+}

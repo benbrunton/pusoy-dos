@@ -216,12 +216,14 @@ impl Game{
         for card in &cards {
             match *card {
                 PlayerCard::Card(_) => {
-                    if !player.get_hand().contains(&card){
+                    let hand = player.get_hand();
+                    let reversed_hand = player.reverse_hand().get_hand();
+                    if !hand.contains(&card) && !reversed_hand.contains(&card){
                         return false;
                     }
                 },
                 PlayerCard::Wildcard(_) => {
-
+                    // check player has a joker
                 },
                 PlayerCard::Joker(_) => { panic!("Joker is not a valid move - do you mean Wildcard?"); }
             }
