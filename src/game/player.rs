@@ -55,7 +55,8 @@ impl Player{
         let hand = self.remove_jokers(cards);
 
         let new_hand = hand.iter().filter(|&card| {
-           !cards.contains(card) 
+            let reversed = card.reverse();
+           !cards.contains(card)  && !cards.contains(&reversed)
         }).map(|&card|{
             card.clone()  
         }).collect();
