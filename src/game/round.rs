@@ -82,10 +82,20 @@ impl Round {
  
         } else if self.valid_move(new_move) {
 
+            // if unbeatable -- set last move to pass and current_player to current_player
+            // .. next_player = player_id
+            // .. move_on_table = Move::Pass
+
+            let (next_current, move_on_table) = if self.is_unbeatable_move(new_move) {
+                (player_id, Move::Pass)
+            } else {
+                (next_player, new_move)
+            };
+
             Ok(Round{
                 players: self.players.clone(), 
-                current_player: next_player,
-                last_move: new_move,
+                current_player: next_current,
+                last_move: move_on_table,
                 pass_count: 0,
                 first_round: false
             })
@@ -202,5 +212,17 @@ impl Round {
         }
 
         return false;
+    }
+
+    // TODO - ultimate edge case of 5 of a kind with reversed 3s or re-reversed 2s
+    fn is_unbeatable_move(&self, new_move: Move) -> bool {
+        let top_two = card!(Two, Spades).to_card();
+        let bottom_three = card!(Three, Clubs).to_card();
+        match new_move {
+            Move::Single(x) => { x == top_two || x == bottom_three },
+            Move::Pair(x, y) => { x == top_two || y == top_two || x == bottom_three || y == bottom_three },
+            Move::Prial(x, y, z) => { x == top_two || y == top_two || x == bottom_three || y == bottom_three || z == top_two || z == bottom_three},
+            _ => false
+        }
     }
 }

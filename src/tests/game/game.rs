@@ -440,3 +440,27 @@ pub fn reversed_and_not_reversed_are_equal_in_terms_of_player_possession(){
     assert!(valid_move);
 
 }
+
+#[test]
+pub fn an_unbeatable_hand_auto_passes_other_players(){
+    let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs), card!(Two, Spades)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
+    
+    let single_two = build_move(vec!(card!(Two, Clubs))).unwrap();
+
+    let round = Round::new(vec!(0, 1), 0, single_two, 0, false); 
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winners: vec!(),
+        reversed: true
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game = game.player_move(0, vec!(card!(Two, Spades))).unwrap();
+
+    assert_eq!(new_game.round.get_next_player(), 0);
+
+}
