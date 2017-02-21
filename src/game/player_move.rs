@@ -12,7 +12,7 @@ macro_rules! build_fct {
 						})));
 }
 
-#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, Copy, RustcDecodable, RustcEncodable)]
 /// Type of hand that can be played
 pub enum Move{
     /// No cards
@@ -37,7 +37,86 @@ impl Move {
           Move::FiveCardTrick(t) => Move::FiveCardTrick(t.reverse())
        }
     }
+
+    fn is_pass(&self) -> bool {
+        Move::Pass == *self
+    }
+
+    fn is_single(&self) -> bool {
+        match *self {
+            Move::Single(_) => true,
+            _         => false
+        }
+    }
+
+    fn is_pair(&self) -> bool {
+        match *self {
+            Move::Pair(_, _) => true,
+            _          => false
+        }
+    }
+
+    fn is_prial(&self) -> bool {
+        match *self {
+            Move::Prial(_, _, _) => true,
+            _              => false
+        }
+    }
+
+    fn is_five_card_trick(&self) -> bool {
+        match *self {
+            Move::FiveCardTrick(_) => true,
+            _                => false
+        }
+    }
+
+    fn get_five_card_trick(&self) -> Option<Trick> {
+        match *self {
+            Move::FiveCardTrick(t) => Some(t),
+            _                      => None
+        }
+    }
+
+    fn get_top_card(&self) -> Card {
+        match *self {
+            Move::Pass => panic!("pass has no top card!"),
+            Move::Single(a) => get_max_card(vec!(a)),
+            Move::Pair(a, b) => get_max_card(vec!(a, b)),
+            Move::Prial(a, b, c) => get_max_card(vec!(a, b, c)),
+            Move::FiveCardTrick(t) => get_max_card(t.cards.to_vec())
+        }
+    }
+
+    fn types_match(&self, other: &Move) -> bool {
+        match *self {
+            Move::Pass => other.is_pass(),
+            Move::Single(_) => other.is_single(),
+            Move::Pair(_,_) => other.is_pair(),
+            Move::Prial(_, _, _) => other.is_prial(),
+            Move::FiveCardTrick(_) => other.is_five_card_trick()
+        }
+    }
+
 }
+
+impl PartialOrd for Move {
+    fn partial_cmp(&self, other: &Move) -> Option<Ordering> {
+        // should only need to compare moves against self.
+        // although unsure if panic is correct course of action
+        if !self.types_match(other) {
+            return None;
+        }
+
+        match *self {
+            Move::Pass =>  Some(Ordering::Equal),
+            Move::FiveCardTrick(t) => t.partial_cmp(&other.get_five_card_trick().unwrap()),
+            _ => self.get_top_card().partial_cmp(&other.get_top_card())
+        }
+        
+    }
+
+}
+
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Eq, Ord, Copy, RustcDecodable, RustcEncodable)]
 /// Type of 5 card trick

@@ -648,3 +648,22 @@ pub fn only_top_card_counts_in_five_of_a_kind(){
 
     assert_eq!(valid_move, true);
 }
+
+#[test]
+pub fn only_top_card_counts_in_a_pair(){
+    let unbeatable_pair_of_eights = build_move(vec!(card!(Eight, Clubs), card!(Eight, Spades))).unwrap();
+    let beatable_pair_of_eights = build_move(vec!(card!(Eight, Diamonds), card!(Eight, Diamonds))).unwrap();
+
+    let r = Round::new(vec!(0, 1),
+                        0,
+                        beatable_pair_of_eights,
+                        0,
+                        false);
+
+    let valid_move = match r.play(0, unbeatable_pair_of_eights){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert!(valid_move);
+}
