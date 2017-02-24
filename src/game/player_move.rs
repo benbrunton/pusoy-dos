@@ -193,7 +193,10 @@ fn compare_top_card(this:&Trick, other:&Trick) -> Option<Ordering> {
 fn get_max_card(cards:Vec<Card>) -> Card{
     let mut c = cards.clone();
     c.sort();
-    c.reverse();
+
+    if !c.get(0).unwrap().reversed {
+        c.reverse();
+    }
 
     c.first().unwrap().to_owned()
 }
@@ -215,8 +218,6 @@ fn get_top_of_n(cards: Vec<Card>, n:usize) -> Card{
                 .map(|&c|{ c.clone() }).collect();
 
     get_max_card(valid_cards)
-    
-
 }
 
 

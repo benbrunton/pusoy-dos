@@ -667,3 +667,41 @@ pub fn only_top_card_counts_in_a_pair(){
 
     assert!(valid_move);
 }
+
+#[test]
+pub fn only_bottom_card_counts_in_reversed_pair(){
+    let unbeatable_pair_of_fours = build_move(vec!(card!(Four, Clubs, true), card!(Four, Hearts, true))).unwrap();
+    let beatable_pair_of_fours = build_move(vec!(card!(Four, Spades, true), card!(Four, Diamonds, true))).unwrap();
+
+    let r = Round::new(vec!(0, 1),
+                        0,
+                        beatable_pair_of_fours,
+                        0,
+                        false);
+
+    let valid_move = match r.play(0, unbeatable_pair_of_fours){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert!(valid_move);
+}
+
+#[test]
+pub fn only_bottom_card_counts_in_reversed_pair_scenario_2(){
+    let unbeatable_pair_of_fours = build_move(vec!(card!(Four, Clubs, true), card!(Four, Spades, true))).unwrap();
+    let beatable_pair_of_fours = build_move(vec!(card!(Four, Spades, true), card!(Four, Diamonds, true))).unwrap();
+
+    let r = Round::new(vec!(0, 1),
+                        0,
+                        beatable_pair_of_fours,
+                        0,
+                        false);
+
+    let valid_move = match r.play(0, unbeatable_pair_of_fours){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert!(valid_move);
+}
