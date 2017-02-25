@@ -127,6 +127,10 @@ impl Game{
             
         }
 
+        if round.export().players.len() < self.round.export().players.len(){
+           round = round.set_pass_count(-1); 
+        }
+
 
        let winners = self.get_winners(&current_player);
 

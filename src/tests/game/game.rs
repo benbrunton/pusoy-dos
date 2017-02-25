@@ -462,5 +462,39 @@ pub fn an_unbeatable_hand_auto_passes_other_players(){
     let new_game = game.player_move(0, vec!(card!(Two, Spades))).unwrap();
 
     assert_eq!(new_game.round.get_next_player(), 0);
+}
+
+#[test]
+pub fn when_a_player_exits_the_next_player_benefits_from_a_full_set_of_passes(){
+    let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Two, Hearts)));
+    let player3 = Player::new(2).set_hand(vec!(card!(Three, Hearts))); 
+
+    let single_two = build_move(vec!(card!(Two, Clubs))).unwrap();
+    let winning_two = build_move(vec!(card!(Two, Hearts))).unwrap();
+
+    let round = Round::new(vec!(0, 1, 2), 1, single_two, 0, false); 
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2, player3),
+        round: round,
+        winners: vec!(),
+        reversed: false
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let game1_def = game.player_move(1, vec!(card!(Two, Hearts))).unwrap();
+
+    assert_eq!(game1_def.round.export().pass_count, -1);
+
+    let game1 = Game::load(game1_def).unwrap();
+
+    let game2 = game1.player_move(2, vec!()).unwrap();
+    let last_move = game2.round.export().last_move;
+
+    assert_eq!(game2.round.get_next_player(), 0);
+
+    assert_eq!(last_move, winning_two);
 
 }

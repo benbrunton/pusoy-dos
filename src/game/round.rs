@@ -8,7 +8,7 @@ pub struct RoundDefinition{
     pub players: Vec<u64>,
     pub current_player: u64,
     pub last_move: Move,
-    pub pass_count: u64,
+    pub pass_count: i64,
     pub first_round: bool
 }
 
@@ -18,7 +18,7 @@ pub struct Round{
     players: Vec<u64>,
     current_player: u64,
     last_move: Move,
-    pass_count: u64,
+    pass_count: i64,
     first_round: bool
 }
 
@@ -28,7 +28,7 @@ impl Round {
     pub fn new(players: Vec<u64>, 
                 current_player: u64, 
                 last_move: Move, 
-                passes: u64,
+                passes: i64,
                 first_round: bool) -> Round {
 
         if !players.contains(&current_player){
@@ -64,12 +64,16 @@ impl Round {
                 0
             };
 
-            let last_move = if pass_count as usize >= self.players.len() - 1 {
+            // this essentially passes the exiting players move to the next player
+            // giving them the benefit of starting if everyone passes
+            let last_move = if self.pass_count == -1 && new_move == Move::Pass {
+                self.last_move
+            } else if pass_count  >= self.players.len() as i64 - 1 {
                 Move::Pass
             } else if new_move == Move::Pass {
                 self.last_move
             } else {
-                new_move    
+                new_move 
             };
            
             Ok(Round{
@@ -144,6 +148,10 @@ impl Round {
        Round::new(self.players.clone(), self.current_player, self.last_move.reverse(), self.pass_count, self.first_round) 
     }
     
+    pub fn set_pass_count(&self, c:i64) -> Round {
+        Round::new(self.players.clone(), self.current_player, self.last_move, c, self.first_round)
+    }
+
     fn determine_next_player(&self) -> u64 {
         if self.current_player == *self.players.last().unwrap() {
             *self.players.first().unwrap()
