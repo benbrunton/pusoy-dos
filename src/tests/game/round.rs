@@ -705,3 +705,22 @@ pub fn only_bottom_card_counts_in_reversed_pair_scenario_2(){
 
     assert!(valid_move);
 }
+
+#[test]
+pub fn higher_four_of_a_kind_is_invalid_after_reversal(){
+    let unbeatable_fours = build_move(vec!(card!(Four, Clubs), card!(Four, Hearts), card!(Four, Spades), card!(Four, Diamonds), card!(Five, Hearts))).unwrap();
+    let beatable_fives = build_move(vec!(card!(Five, Clubs, true), card!(Five, Hearts, true), card!(Five, Spades, true), card!(Five, Diamonds, true), card!(Four, Hearts))).unwrap();
+    let r = Round::new(vec!(0, 1),
+                        0,
+                        unbeatable_fours,
+                        0,
+                        false);
+
+    let invalid_move = match r.play(0, beatable_fives){
+        Err(_) => true,
+        _     => false
+    };
+
+    assert!(invalid_move);
+
+}

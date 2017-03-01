@@ -486,15 +486,77 @@ pub fn when_a_player_exits_the_next_player_benefits_from_a_full_set_of_passes(){
 
     let game1_def = game.player_move(1, vec!(card!(Two, Hearts))).unwrap();
 
-    assert_eq!(game1_def.round.export().pass_count, -1);
-
     let game1 = Game::load(game1_def).unwrap();
 
     let game2 = game1.player_move(2, vec!()).unwrap();
     let last_move = game2.round.export().last_move;
 
     assert_eq!(game2.round.get_next_player(), 0);
-
     assert_eq!(last_move, winning_two);
+
+}
+
+#[test]
+pub fn consecutive_reversals_will_cancel_each_other_out(){
+
+    let player1 = Player::new(0).set_hand(vec!(card!(Six, Hearts), card!(Six, Diamonds), card!(Six, Clubs),
+                                                card!(Six, Spades), card!(Four, Hearts), card!(Five, Hearts)));
+
+    let player2= Player::new(1).set_hand(vec!(card!(Five, Hearts), card!(Five, Diamonds), card!(Five, Clubs),
+                                                card!(Five, Spades), card!(Ten, Hearts), card!(Jack, Hearts)));
+
+    let round = Round::new(vec!(0, 1), 0, build_move(vec!()).unwrap(), 0, false);
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winners: vec!(),
+        reversed: false
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let game1_def = game.player_move(0, vec!(card!(Six, Hearts), card!(Six, Diamonds), card!(Six, Clubs), 
+                                                card!(Six, Spades), card!(Four, Hearts))).unwrap();
+
+    assert!(game1_def.reversed);
+
+    let game1 = Game::load(game1_def).unwrap();
+    let game2 = game1.player_move(1, vec!(card!(Five, Hearts, true), card!(Five, Diamonds, true), card!(Five, Clubs, true),
+                                                card!(Five, Spades, true), card!(Ten, Hearts, true))).unwrap();
+
+    assert!(!game2.reversed);
+}
+
+#[test]
+pub fn immediately_following_a_reversal_with_an_invalid_reversal_bug(){
+    let player1 = Player::new(0).set_hand(vec!(card!(Six, Hearts), card!(Six, Diamonds), card!(Six, Clubs),
+                                                card!(Six, Spades), card!(Four, Hearts), card!(Five, Hearts)));
+
+    let player2= Player::new(1).set_hand(vec!(card!(Ten, Hearts), card!(Ten, Diamonds), card!(Ten, Clubs),
+                                                card!(Ten, Spades), card!(Six, Hearts), card!(Jack, Hearts)));
+
+    let round = Round::new(vec!(0, 1), 0, build_move(vec!()).unwrap(), 0, false);
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winners: vec!(),
+        reversed: false
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let game1_def = game.player_move(0, vec!(card!(Six, Hearts), card!(Six, Diamonds), card!(Six, Clubs), 
+                                                card!(Six, Spades), card!(Four, Hearts))).unwrap();
+
+
+    let game1 = Game::load(game1_def.clone()).unwrap();
+    let game2 = game1.player_move(1, vec!(card!(Ten, Hearts, true), card!(Ten, Diamonds, true), card!(Ten, Clubs, true),
+                                                card!(Ten, Spades, true), card!(Six, Hearts, true))).unwrap();
+
+    assert_eq!(game1_def.clone().reversed, true);
+    assert_eq!(game2.reversed, true);
+    assert_eq!(game1_def.clone().round.get_next_player(), game2.round.get_next_player());
 
 }

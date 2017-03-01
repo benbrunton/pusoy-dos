@@ -96,35 +96,42 @@ impl Game{
         }
 
        let mut players = self.players.clone();
+       let mut valid_move = false;
        let mut round = match self.round.play(player_id, p_move.unwrap()){
             Ok(r) => {
+                valid_move = true;
                 current_player = current_player.remove(&cards);
                 players = self.replace_current_player(&current_player);
                 let player_ids = self.get_players_for_next_round(&players);
                 r.update_players(player_ids)
             },
-            Err(r) => r
+            Err(r) => {
+                valid_move = false;    
+                r
+            }
        };
-       let mut reversed = self.reversed;
 
+        let mut reversed = self.reversed;
 
-       // check for Four of a kind / Five of a kind and reverse cards
-       // this means manually switching the cards in the players hands
-       // and the last played hand on the round
-        match p_move {
-            Some(Move::FiveCardTrick(t)) => match t.trick_type {
-               TrickType::FourOfAKind
-               | TrickType::FiveOfAKind => {
-                    // update round to reverse last_move cards
-                    round = round.reverse_last_move();
-                    // update players to reverse cards in hand    
-                    players = players.iter().map(|ref p|{ p.reverse_hand() }).collect::<Vec<Player>>(); 
-                    reversed = !self.reversed;
-               },
-               _ => ()
-            },
-            _ => ()
-            
+        if valid_move {
+           // check for Four of a kind / Five of a kind and reverse cards
+           // this means manually switching the cards in the players hands
+           // and the last played hand on the round
+            match p_move {
+                Some(Move::FiveCardTrick(t)) => match t.trick_type {
+                   TrickType::FourOfAKind
+                   | TrickType::FiveOfAKind => {
+                        // update round to reverse last_move cards
+                        round = round.reverse_last_move();
+                        // update players to reverse cards in hand    
+                        players = players.iter().map(|ref p|{ p.reverse_hand() }).collect::<Vec<Player>>(); 
+                        reversed = !self.reversed;
+                   },
+                   _ => ()
+                },
+                _ => ()
+                
+            }
         }
 
         if round.export().players.len() < self.round.export().players.len(){

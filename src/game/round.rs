@@ -226,6 +226,7 @@ impl Round {
     fn is_unbeatable_move(&self, new_move: Move) -> bool {
         let top_two = card!(Two, Spades).to_card();
         let bottom_three = card!(Three, Clubs).to_card();
+        // todo Wildcard
         match new_move {
             Move::Single(x) => { x == top_two || x == bottom_three },
             Move::Pair(x, y) => { x == top_two || y == top_two || x == bottom_three || y == bottom_three },
