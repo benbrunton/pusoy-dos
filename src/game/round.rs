@@ -55,6 +55,10 @@ impl Round {
             return Err(self.clone());
         }
 
+        if self.last_move == Move::Pass && new_move == Move::Pass {
+            return Err(self.clone());
+        }
+
         let next_player = self.determine_next_player();
         if self.last_move == Move::Pass || new_move == Move::Pass {
 

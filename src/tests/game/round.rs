@@ -14,7 +14,7 @@ pub fn it_returns_the_current_player_id(){
 pub fn it_returns_a_new_round_when_passed_a_valid_move(){
     // Pass is always a valid move
 
-    let r = Round::new(vec!(1, 2, 3), 1, Move::Pass, 0, false);
+    let r = Round::new(vec!(1, 2, 3), 1, build_move(vec!(card!(Two, Hearts))).unwrap(), 0, false);
 
     let new_round = match r.play(1, Move::Pass) {
         Ok(r) => r,
@@ -45,7 +45,7 @@ pub fn it_returns_an_error_when_a_move_is_invalid(){
 #[test]
 pub fn a_valid_move_rotates_the_players(){
 
-    let r = Round::new(vec!(7, 13, 3), 7, Move::Pass, 0, false);
+    let r = Round::new(vec!(7, 13, 3), 7, build_move(vec!(card!(Two, Hearts))).unwrap(), 0, false);
 
     let new_round = match r.play(7, Move::Pass) {
         Ok(r) => r,
@@ -73,9 +73,9 @@ pub fn a_valid_first_move_rotates_the_players(){
 #[test]
 pub fn rotating_the_player_will_bring_it_back_to_beginning_of_vec(){
 
-    let r = Round::new(vec!(8, 15, 3), 3, Move::Pass, 0, false);
+    let r = Round::new(vec!(8, 15, 3), 3, build_move(vec!(card!(Three, Clubs))).unwrap(), 0, false);
 
-    let new_round = match r.play(3, Move::Pass) {
+    let new_round = match r.play(3, build_move(vec!(card!(Three, Hearts))).unwrap()) {
         Ok(r) => r,
         Err(r) => r
     };
@@ -722,5 +722,16 @@ pub fn higher_four_of_a_kind_is_invalid_after_reversal(){
     };
 
     assert!(invalid_move);
+}
 
+#[test]
+pub fn thou_shalt_not_pass_on_an_empty_table(){
+    let r = Round::new(vec!(0, 1), 0, build_move(vec!()).unwrap(), 0, false);
+
+    let invalid_move = match r.play(0, build_move(vec!()).unwrap()){
+        Err(_)  => true,
+        _       => false
+    };
+
+    assert!(invalid_move);
 }

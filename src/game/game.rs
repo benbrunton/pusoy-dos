@@ -96,6 +96,8 @@ impl Game{
         }
 
        let mut players = self.players.clone();
+       // don't remove me - I am useful for when
+       // surfacing information about the validity of a move
        let mut valid_move = false;
        let mut round = match self.round.play(player_id, p_move.unwrap()){
             Ok(r) => {
