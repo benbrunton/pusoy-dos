@@ -28,8 +28,14 @@ pub struct Game {
 impl Game{
  
     /// create a new Game
-    pub fn setup(player_ids:Vec<u64>) -> Result<GameDefinition, &'static str>{
-        let mut deck = Deck::new();
+    pub fn setup(player_ids:Vec<u64>, num_decks:usize) -> Result<GameDefinition, &'static str>{
+        let mut decks = vec!();
+
+        while decks.len() < num_decks {
+            decks.push(Deck::new());
+        }
+
+        let mut deck = Deck::combine(decks);
 
         deck.shuffle();
 

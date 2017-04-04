@@ -13,7 +13,7 @@ use game::player_move::build_move;
 #[test]
 pub fn game_can_deal_cards_to_each_player_on_setup(){
 
-    let new_game_definition = Game::setup(vec!(0, 1)).unwrap();
+    let new_game_definition = Game::setup(vec!(0, 1), 1).unwrap();
 
     let player1_cards = new_game_definition.players[0].get_hand();
     let player2_cards = new_game_definition.players[1].get_hand();
@@ -23,6 +23,18 @@ pub fn game_can_deal_cards_to_each_player_on_setup(){
 
 }
 
+#[test]
+pub fn multiple_decks(){
+
+    let new_game_definition = Game::setup(vec!(0, 1), 3).unwrap();
+
+    let player1_cards = new_game_definition.players[0].get_hand();
+    let player2_cards = new_game_definition.players[1].get_hand();
+
+    assert_eq!(player1_cards.len(), 27 * 3);
+    assert_eq!(player2_cards.len(), 27 * 3);
+
+}
 #[test]
 pub fn game_can_load_in_any_state(){
 
@@ -48,7 +60,7 @@ pub fn game_can_load_in_any_state(){
 #[test]
 pub fn the_player_with_three_clubs_starts_the_game(){
 
-    let game_def = Game::setup(vec!(0,1)).unwrap();
+    let game_def = Game::setup(vec!(0,1), 1).unwrap();
 
     let game = Game::load(game_def).unwrap();
     
