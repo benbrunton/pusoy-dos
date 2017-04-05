@@ -84,6 +84,33 @@ pub fn the_player_with_three_clubs_starts_the_game(){
 }
 
 #[test]
+pub fn once_the_game_has_started_three_clubs_is_just_another_card(){
+    let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs), card!(Three, Clubs)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
+    let player3 = Player::new(2).set_hand(vec!(card!(Six, Clubs), card!(Six, Hearts)));
+
+    let single_three = build_move(vec!(card!(Three, Clubs))).unwrap();
+
+    let round = Round::new(vec!(0, 1, 2), 1, single_three, 0, false);
+    
+    let game_def = GameDefinition{
+        players: vec!(player1, player2, player3),
+        round: round,
+        winners: vec!(),
+        reversed: false
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game_def = game.player_move(1, vec!(card!(Three, Diamonds))).unwrap();
+
+    let new_game = Game::load(new_game_def).unwrap();
+
+    assert_eq!(new_game.get_next_player().unwrap().get_id(), 2);
+
+}
+
+#[test]
 pub fn valid_moves_return_new_game_definition(){
 
     let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs)));

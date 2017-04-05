@@ -166,10 +166,14 @@ impl Game{
     /// get the next player to play
     pub fn get_next_player(&self) -> Option<Player> {
 
-        let id = match Game::get_next(&self.players) {
-            Some(player) => player.get_id(),
-            _ => self.round.get_next_player()
+        let id = match self.round.has_started() {
+            true => self.round.get_next_player(),
+            false => match Game::get_next(&self.players) {
+                Some(player) => player.get_id(),
+                _ => self.round.get_next_player()
+            }
         };
+
 
         self.get_player(id)
     }

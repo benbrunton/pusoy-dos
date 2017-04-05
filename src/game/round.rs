@@ -122,6 +122,10 @@ impl Round {
         self.last_move
     }
 
+    pub fn has_started(&self) -> bool {
+        return !self.first_round;
+    }
+
     /// export round def
     pub fn export(&self) -> RoundDefinition {
         RoundDefinition{
