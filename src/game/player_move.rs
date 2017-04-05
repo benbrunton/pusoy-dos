@@ -101,8 +101,7 @@ impl Move {
 
 impl PartialOrd for Move {
     fn partial_cmp(&self, other: &Move) -> Option<Ordering> {
-        // should only need to compare moves against self.
-        // although unsure if panic is correct course of action
+
         if !self.types_match(other) {
             return None;
         }
@@ -191,9 +190,12 @@ fn compare_top_card(this:&Trick, other:&Trick) -> Option<Ordering> {
 }
 
 fn get_max_card(cards:Vec<Card>) -> Card{
-    let mut c = cards.clone();
-    c.sort();
+    let mut c = sort_cards(cards);
 
+    // For some reason, this needs removing in the beta and nightly
+    // builds of rust. My *guess* is that the Vec.sort method is not
+    // respecting the custom Card order which means we have to make this check
+    // for the reversed case. There are tests that will cover this.
     if !c.get(0).unwrap().reversed {
         c.reverse();
     }

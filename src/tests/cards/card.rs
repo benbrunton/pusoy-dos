@@ -59,3 +59,11 @@ pub fn reversals_reverse_card_order() {
     assert!(card!(Three, Clubs, true) > card!(Two, Spades, true));
 }
 
+#[test]
+pub fn reversed_card_comparison(){
+    let club = card!(Four, Clubs, true);
+    let diamond = card!(Four, Diamonds,  true);
+
+    assert!(club > diamond);
+}
+

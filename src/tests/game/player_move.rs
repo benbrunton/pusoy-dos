@@ -309,3 +309,22 @@ pub fn full_house_can_be_in_any_order(){
 
     assert_eq!(mv, full_house);
 }
+
+#[test]
+pub fn reversed_pairs_comparision(){
+    let unbeatable_pair_of_fours = build_move(vec!(card!(Four, Clubs, true), card!(Four, Spades, true))).unwrap();
+    let beatable_pair_of_fours = build_move(vec!(card!(Four, Spades, true), card!(Four, Diamonds, true))).unwrap();
+
+    assert!(unbeatable_pair_of_fours > beatable_pair_of_fours);
+}
+
+
+#[test]
+pub fn reversed_pairs_comparision_2(){
+    let unbeatable_pair_of_fours = build_move(vec!(card!(Four, Clubs, true), card!(Four, Diamonds, true))).unwrap();
+    let beatable_pair_of_fours = build_move(vec!(card!(Four, Spades, true), card!(Four, Hearts, true))).unwrap();
+
+    assert!(unbeatable_pair_of_fours > beatable_pair_of_fours);
+}
+
+
