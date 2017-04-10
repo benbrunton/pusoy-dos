@@ -52,18 +52,23 @@ impl Player{
     /// take some cards from a player
     pub fn remove(&self, cards:&Vec<PlayerCard>) -> Player {
 
-        let hand = self.remove_jokers(cards);
+        let mut hand = self.remove_jokers(cards);
 
-        let new_hand = hand.iter().filter(|&card| {
-            let reversed = card.reverse();
-           !cards.contains(card)  && !cards.contains(&reversed)
-        }).map(|&card|{
-            card.clone()  
-        }).collect();
+        for &card in cards {
+            match card {
+                PlayerCard::Joker(_)|
+                PlayerCard::Wildcard(_)  => (),
+                _ => {
+                    let reversed = card.reverse();
+                    let pos = hand.iter().position(|&c| { card == c || reversed == c }).unwrap(); 
+                    hand.remove(pos);
+                }
+            }
+        }
 
         Player {
             id: self.id,
-            hand: new_hand
+            hand: hand
         }
     }
 

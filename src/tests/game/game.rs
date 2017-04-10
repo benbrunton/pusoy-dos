@@ -215,6 +215,52 @@ pub fn player_loses_cards_when_move_is_valid(){
 }
 
 #[test]
+pub fn player_only_loses_cards_that_are_played(){
+
+    let player1 = Player::new(0).set_hand(vec!(card!(Three, Hearts), card!(Five, Clubs), card!(Three, Hearts)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
+
+    let single_three = build_move(vec!(card!(Three, Clubs))).unwrap();
+    let round = Round::new(vec!(0, 1), 0, single_three, 0, false); 
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winners: vec!(),
+        reversed: false
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game = game.player_move(0, vec!(card!(Three, Hearts))).unwrap();
+
+    assert_eq!(new_game.players[0].get_hand().len(), 2);
+}
+
+#[test]
+pub fn player_loses_all_cards_that_are_played(){
+
+    let player1 = Player::new(0).set_hand(vec!(card!(Three, Hearts), card!(Five, Clubs), card!(Three, Hearts)));
+    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
+
+    let single_three = build_move(vec!(card!(Three, Clubs), card!(Three, Clubs))).unwrap();
+    let round = Round::new(vec!(0, 1), 0, single_three, 0, false); 
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winners: vec!(),
+        reversed: false
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let new_game = game.player_move(0, vec!(card!(Three, Hearts), card!(Three, Hearts))).unwrap();
+
+    assert_eq!(new_game.players[0].get_hand().len(), 1);
+}
+
+#[test]
 pub fn player_loses_joker_when_playing_wildcard(){
     let player1 = Player::new(0).set_hand(vec!(
             card!(Four, Hearts), card!(Five, Clubs), PlayerCard::Joker(0)));
