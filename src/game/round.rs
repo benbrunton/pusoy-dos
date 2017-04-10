@@ -47,15 +47,25 @@ impl Round {
     /// play a move in the current round
     pub fn play(&self, player_id: u64, new_move: Move) -> Result<Round, Round> {
 
+        if self.last_move == Move::Pass && new_move == Move::Pass {
+            return Err(self.clone());
+        }
+
+        self.process_move(player_id, new_move)
+
+    }
+
+    pub fn skip(&self, player_id: u64) -> Result<Round, Round> {
+        self.process_move(player_id, Move::Pass)
+    }
+
+    fn process_move(&self, player_id: u64, new_move: Move) -> Result<Round, Round> {
+
         if player_id != self.current_player {
             return Err(self.clone());
         }
 
         if self.first_round && !self.includes_three(new_move){
-            return Err(self.clone());
-        }
-
-        if self.last_move == Move::Pass && new_move == Move::Pass {
             return Err(self.clone());
         }
 
@@ -110,6 +120,8 @@ impl Round {
         } else {
             Err(self.clone())
         }
+
+
     }
     
     /// check who should play the next move

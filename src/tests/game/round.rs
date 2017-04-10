@@ -735,3 +735,16 @@ pub fn thou_shalt_not_pass_on_an_empty_table(){
 
     assert!(invalid_move);
 }
+
+#[test]
+pub fn skip_allows_it_though(){
+    let r = Round::new(vec!(0, 1), 0, build_move(vec!()).unwrap(), 0, false);
+
+    let invalid_move = match r.skip(0){
+        Err(_)  => false,
+        _       => true
+    };
+
+    assert!(invalid_move);
+
+}
