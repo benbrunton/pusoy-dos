@@ -164,7 +164,8 @@ impl PartialOrd for Trick {
         if self.trick_type == other.trick_type {
             match self.trick_type {
                 TrickType::Flush 
-                    | TrickType::FiveOfAKind => compare_top_card(self, other),
+                    | TrickType::FiveOfAKind
+                    | TrickType::Straight => compare_top_card(self, other),
                 TrickType::FullHouse => compare_main_set(self, other, 3),
                 TrickType::FourOfAKind => compare_main_set(self, other, 4),
                 _ => self.cards.partial_cmp(&other.cards)

@@ -327,4 +327,14 @@ pub fn reversed_pairs_comparision_2(){
     assert!(unbeatable_pair_of_fours > beatable_pair_of_fours);
 }
 
+#[test]
+pub fn straights_compared_on_highest_card(){
+    let lower_straight = build_move(vec!(card!(Six, Spades), card!(Seven, Spades), card!(Eight, Spades),
+                                card!(Nine, Spades), card!(Ten, Clubs)));
+    let higher_straight = build_move(vec!(card!(Six, Hearts), card!(Seven, Diamonds), card!(Eight, Clubs), 
+                                                card!(Nine, Spades), card!(Ten, Hearts)));
+
+    assert!(lower_straight < higher_straight);
+}
+
 

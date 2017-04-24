@@ -645,3 +645,35 @@ pub fn immediately_following_a_reversal_with_an_invalid_reversal_bug(){
     assert_eq!(game1_def.clone().round.get_next_player(), game2.round.get_next_player());
 
 }
+
+#[test]
+pub fn straights_are_compared_by_highest_card() {
+    let player1 = Player::new(0).set_hand(vec!(card!(Six, Hearts), card!(Seven, Diamonds), card!(Eight, Clubs),
+                                                card!(Nine, Spades), card!(Ten, Hearts), card!(Five, Hearts)));
+
+    let player2= Player::new(1).set_hand(vec!(card!(Ten, Hearts), card!(Ten, Diamonds), card!(Ten, Clubs),
+                                                card!(Ten, Spades), card!(Six, Hearts), card!(Jack, Hearts)));
+
+
+    let ten_high_straight = vec!(card!(Six, Spades), card!(Seven, Spades), card!(Eight, Spades),
+                                card!(Nine, Spades), card!(Ten, Clubs));
+
+    let round = Round::new(vec!(0, 1), 0, build_move(ten_high_straight).unwrap(), 0, false);
+
+    let game_def = GameDefinition{
+        players: vec!(player1, player2),
+        round: round,
+        winners: vec!(),
+        reversed: false
+    };
+
+    let game = Game::load(game_def).unwrap();
+
+    let game1_def = game.player_move(0, vec!(card!(Six, Hearts), card!(Seven, Diamonds), card!(Eight, Clubs), 
+                                                card!(Nine, Spades), card!(Ten, Hearts))).unwrap();
+
+
+    let game1 = Game::load(game1_def.clone()).unwrap();
+
+    assert_eq!(game1_def.clone().round.get_next_player(), 1);
+}
