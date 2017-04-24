@@ -111,7 +111,7 @@ impl PartialOrd for Move {
             Move::FiveCardTrick(t) => t.partial_cmp(&other.get_five_card_trick().unwrap()),
             _ => self.get_top_card().partial_cmp(&other.get_top_card())
         }
-        
+
     }
 
 }
@@ -137,7 +137,7 @@ pub enum TrickType{
 #[derive(Clone, Debug, PartialEq, Copy, RustcDecodable, RustcEncodable)]
 pub struct Trick{
 	pub trick_type: TrickType,
-	pub cards: [Card;5]	
+	pub cards: [Card;5]
 }
 
 impl Trick {
@@ -208,7 +208,7 @@ fn get_top_of_n(cards: Vec<Card>, n:usize) -> Card{
 
     let counts = get_counts(cards.clone());
     let mut top_rank = Rank::Three;
-    
+
 	for (rank, count) in &counts {
 		if *count == n {
             top_rank = *rank;
@@ -271,7 +271,8 @@ fn check_valid_fct(c: Vec<Card>) -> Option<Move> {
 
            }
         },
-        5 => {
+        //with multiple packs a flush can have multiple of the same card
+        _ => {
             //flush or straight or straight flush
             let straight = cards.iter().enumerate().all(|(i, &card)| i == 0 || card.previous_rank().is_some() && cards[i-1].rank == card.previous_rank().unwrap());
             let flush = cards.iter().all(|&card| card.suit == cards[0].suit);
@@ -281,8 +282,7 @@ fn check_valid_fct(c: Vec<Card>) -> Option<Move> {
                 (_, true)       => build_fct!(Flush, cards),
                 _               => None
             }
-        },
-        _ => None
+        }
     }
 }
 

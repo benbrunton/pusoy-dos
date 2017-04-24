@@ -179,6 +179,35 @@ pub fn five_of_the_same_suit_is_a_flush(){
 }
 
 #[test]
+pub fn a_flush_works_with_multiple_decks() {
+    let three_of_hearts = card!(Three, Hearts);
+    let three_of_hearts2 = card!(Three, Hearts);
+    let three_of_hearts3 = card!(Three, Hearts);
+    let four_of_hearts = card!(Four, Hearts);
+    let five_of_hearts = card!(Five, Hearts);
+
+    let cards = vec!(three_of_hearts,
+                     three_of_hearts2,
+                     three_of_hearts3,
+                     four_of_hearts,
+                     five_of_hearts);
+
+    let mv = build_move(cards);
+
+    let five_card_trick = Some(Move::FiveCardTrick(
+                                Trick{
+                                    trick_type: TrickType::Flush,
+                                    cards: [
+                                    three_of_hearts.to_card(),
+                                    three_of_hearts2.to_card(),
+                                    three_of_hearts3.to_card(),
+                                    four_of_hearts.to_card(),
+                                    five_of_hearts.to_card()]}));
+
+    assert_eq!(five_card_trick, mv);
+}
+
+#[test]
 pub fn a_straight_is_a_five_card_trick(){
     let three_of_clubs = card!(Three, Clubs);
     let four_of_hearts  = card!(Four, Hearts);
