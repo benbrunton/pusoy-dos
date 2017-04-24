@@ -104,7 +104,7 @@ impl Game{
        let mut players = self.players.clone();
        // don't remove me - I am useful for when
        // surfacing information about the validity of a move
-       let mut valid_move = false;
+       let valid_move;
        let mut round = match self.round.play(player_id, p_move.unwrap()){
             Ok(r) => {
                 valid_move = true;
@@ -149,12 +149,18 @@ impl Game{
 
        let winners = self.get_winners(&current_player);
 
-       Ok(GameDefinition{
+       let game_def = GameDefinition{
           players: players.clone(),
           round: round,
           winners: winners,
           reversed: reversed
-       })
+       };
+
+       if valid_move {
+           Ok(game_def)
+       } else {
+           Err("move was invalid")
+       }
        
     }
   

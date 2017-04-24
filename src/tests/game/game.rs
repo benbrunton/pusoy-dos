@@ -287,29 +287,6 @@ pub fn player_loses_joker_when_playing_wildcard(){
 }
 
 #[test]
-pub fn player_keeps_cards_when_move_is_invalid(){
-    let player1 = Player::new(0).set_hand(vec!(card!(Four, Diamonds), card!(Six, Hearts)));
-    let player2 = Player::new(1).set_hand(vec!(card!(Five, Clubs)));
-
-    let single_queen = build_move(vec!(card!(Queen, Spades))).unwrap();
-
-    let round = Round::new(vec!(0, 1), 0, single_queen, 0, false);
-
-    let game_def = GameDefinition{
-        players: vec!(player1, player2),
-        round: round,
-        winners: vec!(),
-        reversed: false
-    };
-
-    let game = Game::load(game_def).unwrap();
-
-    let new_game = game.player_move(0, vec!(card!(Four, Diamonds))).unwrap();
-
-    assert_eq!(new_game.players[0].get_hand(), vec!(card!(Four, Diamonds), card!(Six, Hearts)));
-}
-
-#[test]
 pub fn player_using_last_card_wins(){
     let player1 = Player::new(0).set_hand(vec!(card!(Two, Hearts)));
     let player2 = Player::new(1).set_hand(vec!(card!(Queen, Diamonds)));
@@ -498,35 +475,6 @@ pub fn playing_a_four_card_trick_reverses_the_cards(){
 }
 
 #[test]
-pub fn reversed_and_not_reversed_are_equal_in_terms_of_player_possession(){
-    // meaning if you check a player has a QH(reversed), but they only have a QH(not reversed) in hand
-    // then they are counted as having that card
-    let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs)));
-    let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
-    
-    let single_two = build_move(vec!(card!(Two, Clubs, true))).unwrap();
-
-    let round = Round::new(vec!(0, 1), 0, single_two, 0, false); 
-
-    let game_def = GameDefinition{
-        players: vec!(player1, player2),
-        round: round,
-        winners: vec!(),
-        reversed: true
-    };
-
-    let game = Game::load(game_def).unwrap();
-
-    let valid_move = match game.player_move(0, vec!(card!(Four, Hearts))){
-        Ok(_)  => true,
-        _       => false
-    };
-
-    assert!(valid_move);
-
-}
-
-#[test]
 pub fn an_unbeatable_hand_auto_passes_other_players(){
     let player1 = Player::new(0).set_hand(vec!(card!(Four, Hearts), card!(Five, Clubs), card!(Two, Spades)));
     let player2 = Player::new(1).set_hand(vec!(card!(Three, Diamonds)));
@@ -637,12 +585,15 @@ pub fn immediately_following_a_reversal_with_an_invalid_reversal_bug(){
 
 
     let game1 = Game::load(game1_def.clone()).unwrap();
-    let game2 = game1.player_move(1, vec!(card!(Ten, Hearts, true), card!(Ten, Diamonds, true), card!(Ten, Clubs, true),
-                                                card!(Ten, Spades, true), card!(Six, Hearts, true))).unwrap();
+    let game1_result = game1.player_move(1, vec!(card!(Ten, Hearts, true), card!(Ten, Diamonds, true), card!(Ten, Clubs, true),
+                                                card!(Ten, Spades, true), card!(Six, Hearts, true)));
+    let valid_move = match game1_result {
+        Err(_) => false,
+        _ => true
+    };
 
     assert_eq!(game1_def.clone().reversed, true);
-    assert_eq!(game2.reversed, true);
-    assert_eq!(game1_def.clone().round.get_next_player(), game2.round.get_next_player());
+    assert_eq!(valid_move, false);
 
 }
 
@@ -671,9 +622,6 @@ pub fn straights_are_compared_by_highest_card() {
 
     let game1_def = game.player_move(0, vec!(card!(Six, Hearts), card!(Seven, Diamonds), card!(Eight, Clubs), 
                                                 card!(Nine, Spades), card!(Ten, Hearts))).unwrap();
-
-
-    let game1 = Game::load(game1_def.clone()).unwrap();
 
     assert_eq!(game1_def.clone().round.get_next_player(), 1);
 }
