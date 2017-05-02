@@ -193,13 +193,7 @@ fn compare_top_card(this:&Trick, other:&Trick) -> Option<Ordering> {
 fn get_max_card(cards:Vec<Card>) -> Card{
     let mut c = sort_cards(cards);
 
-    // For some reason, this needs removing in the beta and nightly
-    // builds of rust. My *guess* is that the Vec.sort method is not
-    // respecting the custom Card order which means we have to make this check
-    // for the reversed case. There are tests that will cover this.
-    if !c.get(0).unwrap().reversed {
-        c.reverse();
-    }
+    c.reverse();
 
     c.first().unwrap().to_owned()
 }
