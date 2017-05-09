@@ -396,4 +396,18 @@ pub fn straights_compared_on_highest_card(){
     assert!(lower_straight < higher_straight);
 }
 
+#[test]
+pub fn two_jokers_can_be_played_in_a_prial(){
+    let prial = build_move(vec!(
+                   card!(Six, Spades),
+                   wildcard!(Six, Clubs),
+                   wildcard!(Six, Diamonds)
+                   ));
+    let mv = Some(Move::Prial(card!(Six, Spades).to_card(),
+                        card!(Six, Clubs).to_card(),
+                        card!(Six, Diamonds).to_card()));
+   
+    assert_eq!(prial, mv); 
+}
+
 
