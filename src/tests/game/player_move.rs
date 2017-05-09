@@ -237,6 +237,36 @@ pub fn a_straight_is_a_five_card_trick(){
 }
 
 #[test]
+pub fn a_reversed_straight_is_a_five_card_trick(){
+    let three_of_clubs = card!(Three, Clubs, true);
+    let four_of_hearts  = card!(Four, Hearts, true);
+    let five_of_spades  = card!(Five, Spades, true);
+    let six_of_spades  = card!(Six, Spades, true);
+    let seven_of_diamonds = card!(Seven, Diamonds, true);
+
+    let cards = vec!(three_of_clubs,
+                     four_of_hearts,
+                     five_of_spades,
+                     six_of_spades,
+                     seven_of_diamonds);
+
+    let mv = build_move(cards);
+    let five_card_trick = Some(Move::FiveCardTrick(
+                Trick{
+                    trick_type: TrickType::Straight,
+                    cards: [
+                     seven_of_diamonds.to_card(),
+                     six_of_spades.to_card(),
+                     five_of_spades.to_card(),
+                     four_of_hearts.to_card(),
+                     three_of_clubs.to_card()
+                    ]}));
+
+    assert_eq!(mv, five_card_trick);
+
+}
+
+#[test]
 pub fn a_straight_flush_is_a_five_card_trick(){
     let three_of_clubs = card!(Three, Clubs);
     let four_of_clubs  = card!(Four, Clubs);

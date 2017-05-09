@@ -748,3 +748,44 @@ pub fn skip_allows_it_though(){
     assert!(invalid_move);
 
 }
+
+#[test]
+pub fn straight_can_be_played_on_empty_table(){
+
+    let r = Round::new(vec!(0, 1), 0, build_move(vec!()).unwrap(), 0, false);
+
+    let straight = build_move(vec!(
+            card!(Four, Hearts),
+            card!(Five, Clubs),
+            card!(Six, Diamonds),
+            card!(Seven, Spades),
+            card!(Eight, Clubs))).unwrap();
+
+    let valid_move = match r.play(0, straight){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert!(valid_move);
+}
+
+#[test]
+pub fn reversed_straight_can_be_played_on_empty_table(){
+
+    let r = Round::new(vec!(0, 1), 0, build_move(vec!()).unwrap(), 0, false);
+
+    let straight = build_move(vec!(
+            card!(Four, Hearts, true),
+            card!(Five, Clubs, true),
+            card!(Six, Diamonds, true),
+            card!(Seven, Spades, true),
+            card!(Eight, Clubs, true))).unwrap();
+
+    let valid_move = match r.play(0, straight){
+        Ok(_) => true,
+        _     => false
+    };
+
+    assert!(valid_move);
+
+}

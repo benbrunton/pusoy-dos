@@ -69,12 +69,18 @@ impl Card {
 
     /// returns previous `Rank` of card or `None`
     pub fn previous_rank(&self) -> Option<Rank>{
-        previous_rank(&self.rank)
+        match self.reversed {
+            false => previous_rank(&self.rank),
+            true => next_rank(&self.rank)
+        }
     }
 
     /// returns next `Rank` of this card or `None`
     pub fn next_rank(&self) -> Option<Rank>{
-        next_rank(&self.rank)
+        match self.reversed {
+            false => next_rank(&self.rank),
+            true => previous_rank(&self.rank)
+        }
     }
 
     /// returns the alternate `Colour` to this card
