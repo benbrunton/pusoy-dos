@@ -3,7 +3,7 @@ use cards::card::{ Card, PlayerCard };
 use cards::types::{Rank, Suit};
 
 /// definition
-#[derive(Clone, Debug, PartialEq, RustcDecodable, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct RoundDefinition{
     pub players: Vec<u64>,
     pub current_player: u64,
@@ -242,11 +242,15 @@ impl Round {
         return false;
     }
 
-    // TODO - ultimate edge case of 5 of a kind with reversed 3s or re-reversed 2s
+    // NOTE - This method assumes that it is only called when the round is in play
+    //      - Because if there are cards on the table then for the extreme cards
+    //      - to be a valid move, then it must be a winning move!
+    //      - !! In a multi-deck game this may not be true for pairs or prials
     fn is_unbeatable_move(&self, new_move: Move) -> bool {
+        // TODO - ultimate edge case of 5 of a kind with reversed 3s or re-reversed 2s
         let top_two = card!(Two, Spades).to_card();
         let bottom_three = card!(Three, Clubs).to_card();
-        // todo Wildcard
+        // TODO - Wildcard
         match new_move {
             Move::Single(x) => { x == top_two || x == bottom_three },
             Move::Pair(x, y) => { x == top_two || y == top_two || x == bottom_three || y == bottom_three },

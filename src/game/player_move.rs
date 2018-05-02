@@ -12,7 +12,7 @@ macro_rules! build_fct {
 						})));
 }
 
-#[derive(Clone, Debug, PartialEq, Copy, RustcDecodable, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, Copy, Serialize, Deserialize)]
 /// Type of hand that can be played
 pub enum Move{
     /// No cards
@@ -117,7 +117,7 @@ impl PartialOrd for Move {
 }
 
 
-#[derive(Clone, Debug, PartialEq, PartialOrd, Eq, Ord, Copy, RustcDecodable, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Eq, Ord, Copy, Serialize, Deserialize)]
 /// Type of 5 card trick
 pub enum TrickType{
     /// sequence
@@ -134,7 +134,7 @@ pub enum TrickType{
     FiveOfAKind,
 }
 
-#[derive(Clone, Debug, PartialEq, Copy, RustcDecodable, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, Copy, Serialize, Deserialize)]
 pub struct Trick{
 	pub trick_type: TrickType,
 	pub cards: [Card;5]

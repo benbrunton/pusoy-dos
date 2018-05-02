@@ -5,7 +5,7 @@ use cards::types::*;
 
 #[macro_export]
 macro_rules! card {
-    ($rank:ident, $suit:ident) => (PlayerCard::Card(Card::new(Rank::$rank, Suit::$suit, false)));
+   ($rank:ident, $suit:ident) => (PlayerCard::Card(Card::new(Rank::$rank, Suit::$suit, false)));
     ($rank:ident, $suit:ident, $reverse:expr) => (PlayerCard::Card(Card::new(Rank::$rank, Suit::$suit, $reverse)));
 }
 
@@ -17,7 +17,7 @@ macro_rules! wildcard {
 
 
 
-#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, RustcDecodable, RustcEncodable, Eq, Ord)]
+#[derive(Clone, Debug, PartialEq, Copy, PartialOrd, Serialize, Deserialize, Eq, Ord)]
 /// A Wrapper type that holds Real Cards and Jokers
 pub enum PlayerCard {
    Card(Card),
@@ -43,7 +43,7 @@ impl PlayerCard {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Copy, RustcDecodable, RustcEncodable, Eq, Ord)]
+#[derive(Clone, Debug, PartialEq, Copy, Serialize, Deserialize, Eq, Ord)]
 /// An individual card
 pub struct Card{
     /// The `Rank` of the card

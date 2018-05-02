@@ -1,7 +1,7 @@
 use cards::card::PlayerCard;
 
 /// A player
-#[derive(Clone, Debug, PartialEq, RustcDecodable, RustcEncodable)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Player{
     hand: Vec<PlayerCard>,
     id: u64
