@@ -1,9 +1,13 @@
 [package]
 name = "pusoy_dos"
-version = "0.1.0"
-authors = ["Ben Brunton <benbrunton@hotmail.com>"]
+version = "0.1.1"
+authors = ["Ben Brunton <ben.b.brunton@gmail.com>"]
 license = "MIT"
 description = "Pusoy Dos library"
+readme = "README.md"
+
+[badges]
+travis-ci = { repository = "benbrunton/pusoy_dos", branch = "master" }
 
 [dependencies]
 rand = "0.3"
